@@ -1,66 +1,56 @@
 .tile {
   min-height: 100px;
-  background-size: 200%;
   overflow: hidden;
   margin: 4px;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: 200%;
+  &.backside {
+    background-position: top right;
+  }
   &.bowman { 
-    background: url('./images/Bowman.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Bowman.png');
   }
   &.champion { 
-    background: url('./images/Champion.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Champion.png');
   }
   &.dragoon { 
-    background: url('./images/Dragoon.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Dragoon.png');
   }
   &.duchess { 
-    background: url('./images/Duchess.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Duchess.png');
   }
   &.duke {
-    background: url('./images/Duke.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Duke.png');
   }
   &.footman { 
-    background: url('./images/Footman.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Footman.png');
   }
   &.general { 
-    background: url('./images/General.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/General.png');
   }
   &.knight { 
-    background: url('./images/Knight.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Knight.png');
   }
   &.marshall { 
-    background: url('./images/Marshall.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Marshall.png');
   }
   &.oracle { 
-    background: url('./images/Oracle.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Oracle.png');
   }
   &.pikeman { 
-    background: url('./images/Pikeman.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Pikeman.png');
   }
   &.priest { 
-    background: url('./images/Priest.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Priest.png');
   }
   &.ranger { 
-    background: url('./images/Ranger.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Ranger.png');
   }
   &.seer { 
-    background: url('./images/Seer.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Seer.png');
   }
   &.wizard { 
-    background: url('./images/Wizard.png') top left no-repeat;
-    background-size: 200%;
+    background-image: url('./images/Wizard.png');
   }
 }

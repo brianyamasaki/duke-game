@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PiecesOnBoard from './pieces';
+import SpacesOnBoard from './pieces';
 
 import "./board.css";
 
@@ -41,7 +41,7 @@ class Board extends Component {
         className="board" 
         ref={this.refCallback} 
         style={style}>
-        <PiecesOnBoard boardWidth={this.state.width}/>
+        <SpacesOnBoard boardWidth={this.state.width}/>
       </div>
     );
   }

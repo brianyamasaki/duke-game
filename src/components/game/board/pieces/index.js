@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
 import { BOARD_SPACE_DIVISOR } from '../../../../constants';
-import { indexToRowCol, addPiece } from '../../../../modules/boardState';
+import { spacesInit, spaceClicked } from '../../../../modules/boardState';
 
-class PiecesOnBoard extends Component {
+import './index.css';
+
+class SpacesOnBoard extends Component {
   state = {
     boardWidth: 0
+  }
+
+  componentDidMount() {
+    this.props.spacesInit();
   }
 
   componentDidUpdate(prevProps) {
@@ -16,8 +22,8 @@ class PiecesOnBoard extends Component {
   }
 
   onClick = (e, i) => {
-    const rowCol = indexToRowCol(i);
-    this.props.addPiece(0, 'duke', rowCol.row, rowCol.col);
+    const { spaceClicked, boardState } = this.props;
+    spaceClicked(i, boardState.gameState);
   }
 
   renderSpace = (space, i) => {
@@ -26,12 +32,21 @@ class PiecesOnBoard extends Component {
       height,
       width: height
     };
-    const tile = space.tile ? <Tile type="duke" /> : ''
+    const isHighlighted = this.props.boardState.highlighted.indexOf(i) !== -1;
+    const isSelected = this.props.boardState.selected.indexOf(i) !== -1;
+    const tile = space.tile ? <Tile type={space.tile} /> : '';
+    const classes = ['space'];
+    if (isHighlighted) {
+      classes.push('highlight');
+    }
+    if (isSelected) {
+      classes.push('selected');
+    }
     return (
       <span 
         key={i} 
-        className="space" 
-        onClick={e => this.onClick(e, i)}
+        className={classes.join(' ')}
+        onClick={e => { isHighlighted && this.onClick(e, i)}}
         style={style}>
         {tile}
       </span> 
@@ -58,5 +73,6 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-  addPiece
-})(PiecesOnBoard);
+  spacesInit,
+  spaceClicked
+})(SpacesOnBoard);
