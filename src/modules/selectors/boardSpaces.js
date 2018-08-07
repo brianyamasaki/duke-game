@@ -13,6 +13,7 @@ export const tiledSpaces = createSelector(
       player.tilesOnBoard.forEach(tileInfo => {
         spacesNext[tileInfo.iSpace] = {
           type: tileInfo.type,
+          moves: tileInfo.moves,
           iSpace: tileInfo.iSpace,
           iPlayer
         } 

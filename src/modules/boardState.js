@@ -1,6 +1,7 @@
 import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
 import { POS_ABOVE, POS_LEFT, POS_RIGHT, POS_BELOW, shuffleDeck } from '../cards';
 import { cloneObject } from '../shared';
+import { highlightsFromType } from '../cards/cardHighlights';
 
 export const SPACES_INIT = 'SPACES_INIT';
 export const GAME_CHOOSE_DUKE_POSITION = 'GAME_CHOOSE_DUKE_POSITION';
@@ -25,6 +26,8 @@ const initialState = {
   selected: [],
   highlighted: [],
   gameState: '',
+  selectedTileType: '',
+  currentPlayer: 0,
   players: [playerDft, playerDft],
   uiHint: 'Please click on a highlighted space to place your Duke',
 };
@@ -114,10 +117,11 @@ export default (state = initialState, action) => {
     case GAME_DUKE_PLACED:
       playersClone = cloneAndModifyPlayer(
         state.players, 
-        action.payload.iPlayer, 
+        state.currentPlayer, 
         (player) => player.tilesOnBoard.push({
           type: 'duke',
-          iSpace: action.payload.iSpace
+          iSpace: action.payload.iSpace,
+          moves: 1
          })
       );
       return {
@@ -132,16 +136,17 @@ export default (state = initialState, action) => {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN2_POSITION,
         highlighted: highlightSpaces(
-            dukeIndex(state.players[action.payload.iPlayer].tilesOnBoard), 
+            dukeIndex(state.players[state.currentPlayer].tilesOnBoard), 
             highlightsForDukesFootman, [action.payload.iSpace]
           ),
         uiHint: action.payload.uiHint,
         players: cloneAndModifyPlayer(
           state.players, 
-          action.payload.iPlayer, 
+          state.currentPlayer, 
           (player) => player.tilesOnBoard.push({
             type: 'footman',
-            iSpace: action.payload.iSpace
+            iSpace: action.payload.iSpace,
+            moves: 1
            })
         )
       };
@@ -153,18 +158,27 @@ export default (state = initialState, action) => {
         uiHint: action.payload.uiHint,
         players: cloneAndModifyPlayer(
           state.players, 
-          action.payload.iPlayer, 
+          state.currentPlayer, 
           (player) => player.tilesOnBoard.push({
             type: 'footman',
-            iSpace: action.payload.iSpace
+            iSpace: action.payload.iSpace,
+            moves: 1
            })
         )
       };
     case GAME_TILE_SELECTED:
       return {
         ...state,
+        highlighted: highlightsFromType(
+          action.payload.iSpace,
+          action.payload.tileType,
+          action.payload.isOdd,
+          state.currentPlayer
+        ),
+        selectedTileType: action.payload.tileType,
         selected: [action.payload.iSpace],
-        uiHint: action.payload.uiHint
+        uiHint: action.payload.uiHint,
+        selectedTileType: action.payload.tileType
       }
     default:
       return state
@@ -188,13 +202,12 @@ export const playersInit = (name1 = 'Player One', name2 = 'Player Two') => {
 }
 
 // state machine for clicking on tiles
-export const spaceClicked = (iSpace, gameState, iPlayer = 0) => {
+export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
   switch (gameState) {
     case GAME_CHOOSE_DUKE_POSITION:
       return {
         type: GAME_DUKE_PLACED,
         payload: {
-          iPlayer,
           iSpace,
           uiHint: 'Please click on a highlighted space to place your first Footman'
         }
@@ -203,7 +216,6 @@ export const spaceClicked = (iSpace, gameState, iPlayer = 0) => {
       return {
         type: GAME_CHOOSE_FOOTMAN1_POSITION,
         payload: {
-          iPlayer,
           iSpace,
           uiHint: 'Please click on a highlighted space to place your second Footman'
         }
@@ -212,7 +224,6 @@ export const spaceClicked = (iSpace, gameState, iPlayer = 0) => {
       return {
         type: GAME_CHOOSE_FOOTMAN2_POSITION,
         payload: {
-          iPlayer,
           iSpace,
           uiHint: 'Select a tile to move OR draw a new tile'
         }
@@ -221,9 +232,10 @@ export const spaceClicked = (iSpace, gameState, iPlayer = 0) => {
       return {
         type: GAME_TILE_SELECTED,
         payload: {
-          iPlayer,
           iSpace,
-          uiHint: 'Click on a highlighted space to move this tile'
+          uiHint: 'Click on a highlighted space to move this tile',
+          tileType,
+          isOdd
         }
       }
     default:

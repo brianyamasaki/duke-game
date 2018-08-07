@@ -23,9 +23,10 @@ class SpacesOnBoard extends Component {
     }
   }
 
-  onClick = (e, i) => {
+  onClick = (e, i, tileType, moves) => {
     const { spaceClicked, boardState } = this.props;
-    spaceClicked(i, boardState.gameState);
+    const isOdd = tileType && moves ? moves % 2 : false;
+    spaceClicked(i, boardState.gameState, tileType, isOdd);
   }
 
   renderTile = (tile) => {
@@ -54,7 +55,7 @@ class SpacesOnBoard extends Component {
       <span 
         key={i} 
         className={classes.join(' ')}
-        onClick={e => { (isHighlighted || isTileSelectable) && this.onClick(e, i)}}
+        onClick={e => { (isHighlighted || isTileSelectable) && this.onClick(e, i, space.type, space.moves)}}
         style={style}>
         { this.renderTile(space)}
       </span> 
