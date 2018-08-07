@@ -1,19 +1,32 @@
 import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
+import { POS_ABOVE, POS_LEFT, POS_RIGHT, POS_BELOW, shuffleDeck } from '../cards';
+import { cloneObject } from '../shared';
 
-export const GAME_INIT = 'GAME_INIT';
+export const SPACES_INIT = 'SPACES_INIT';
 export const GAME_CHOOSE_DUKE_POSITION = 'GAME_CHOOSE_DUKE_POSITION';
 export const GAME_DUKE_PLACED = 'GAME_DUKE_PLACED';
 export const GAME_CHOOSE_FOOTMAN1_POSITION = 'GAME_CHOOSE_FOOTMAN1_POSITION';
 export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
+export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
+
+export const highlightsForDukesFootman = [POS_LEFT, POS_RIGHT, POS_ABOVE];
+
+export const PLAYERS_INIT = 'PLAYERS_INIT';
+
+const playerDft = {
+  name: '',
+  tilesInBag: [],
+  tilesOnBoard: []
+};
 
 const initialState = {
   spaces: [],
   selected: [],
-  highlighted: [32, 33],
-  pieceToAdd: 'duke',
-  gameState: GAME_CHOOSE_DUKE_POSITION,
-  uiHint: 'Please click on a highlighted space to place your Duke'
+  highlighted: [],
+  gameState: '',
+  players: [playerDft, playerDft],
+  uiHint: 'Please click on a highlighted space to place your Duke',
 };
 
 export const rowColToIndex = (row, col) => (row * BOARD_COL_COUNT + col);
@@ -26,10 +39,23 @@ export const indexToRowCol = (index) => {
   };
 }
 
-const POS_ABOVE = 'POS_ABOVE';
-const POS_LEFT = 'POS_LEFT';
-const POS_RIGHT = 'POS_RIGHT';
-const POS_BELOW = 'POS_BELOW';
+const cloneAndModifyPlayer = (players, iPlayer, fn) => {
+  return players.map((player, i) => {
+    const playerCopy = cloneObject(player);
+    if (i === iPlayer) {
+      fn(playerCopy);  
+    }
+    return playerCopy;
+  })
+}
+
+export const spacesNew = () => {
+  const spaces = []; 
+  for (let i = 0; i < BOARD_COL_COUNT * BOARD_ROW_COUNT; i++) {
+    spaces.push({});
+  }
+  return spaces;
+}
 
 const pushHighlight = (highlights, skipIndexes, iHighlight) => {
   if (skipIndexes.indexOf(iHighlight) === -1) {
@@ -60,52 +86,86 @@ const highlightSpaces = (iSpace, positions, skipIndexes = [], player) => {
 }
 
 // find the index of the space the Duke is on
-const dukeIndex = (spaces) => {
-  return spaces.findIndex(space =>(space.tile === 'duke'))
+const dukeIndex = (tilesOnBoard) => {
+  const dukeTileInfo = tilesOnBoard.find(tileInfo =>(tileInfo.type === 'duke'));
+  return dukeTileInfo.iSpace;
 }
 
 export default (state = initialState, action) => {
-  let spacesCopy;
+  let playersClone;
   switch (action.type) {
-    case GAME_INIT:
-      spacesCopy = []; 
-      for (let i = 0; i < BOARD_COL_COUNT * BOARD_ROW_COUNT; i++) {
-        spacesCopy.push({});
-      }
+    case SPACES_INIT:
       return {
         ...state,
-        spaces: spacesCopy
+        spaces: spacesNew(),
+        highlighted: [32, 33],
+        gameState: GAME_CHOOSE_DUKE_POSITION
+      }
+    case PLAYERS_INIT:
+      return {
+        ...state,
+        players: state.players.map((player, i) => {
+          const playerClone = cloneObject(player);
+          playerClone.name = action.payload.names[i];
+          playerClone.tilesInBag = shuffleDeck();
+          return playerClone;
+        })
       }
     case GAME_DUKE_PLACED:
-      spacesCopy = state.spaces.slice(0);
-      spacesCopy[action.payload.iSpace].tile = 'duke';
+      playersClone = cloneAndModifyPlayer(
+        state.players, 
+        action.payload.iPlayer, 
+        (player) => player.tilesOnBoard.push({
+          type: 'duke',
+          iSpace: action.payload.iSpace
+         })
+      );
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN1_POSITION,
-        highlighted: highlightSpaces(dukeIndex(state.spaces), [POS_LEFT, POS_RIGHT, POS_ABOVE]),
-        spaces: spacesCopy,
-        uiHint: action.payload.uiHint
+        highlighted: highlightSpaces(action.payload.iSpace, highlightsForDukesFootman),
+        uiHint: action.payload.uiHint,
+        players: playersClone
       };
     case GAME_CHOOSE_FOOTMAN1_POSITION:
-      spacesCopy = state.spaces.slice(0);
-      spacesCopy[action.payload.iSpace].tile = 'footman';
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN2_POSITION,
-        highlighted: highlightSpaces(dukeIndex(state.spaces), [POS_LEFT, POS_RIGHT, POS_ABOVE], [action.payload.iSpace]),
-        spaces: spacesCopy,
-        uiHint: action.payload.uiHint
+        highlighted: highlightSpaces(
+            dukeIndex(state.players[action.payload.iPlayer].tilesOnBoard), 
+            highlightsForDukesFootman, [action.payload.iSpace]
+          ),
+        uiHint: action.payload.uiHint,
+        players: cloneAndModifyPlayer(
+          state.players, 
+          action.payload.iPlayer, 
+          (player) => player.tilesOnBoard.push({
+            type: 'footman',
+            iSpace: action.payload.iSpace
+           })
+        )
       };
     case GAME_CHOOSE_FOOTMAN2_POSITION:
-      spacesCopy = state.spaces.slice(0);
-      spacesCopy[action.payload.iSpace].tile = 'footman';
       return {
         ...state,
         gameState: GAME_SELECT_OR_DRAW,
         highlighted: [], // no highlighted spaces
-        spaces: spacesCopy,
-        uiHint: action.payload.uiHint
+        uiHint: action.payload.uiHint,
+        players: cloneAndModifyPlayer(
+          state.players, 
+          action.payload.iPlayer, 
+          (player) => player.tilesOnBoard.push({
+            type: 'footman',
+            iSpace: action.payload.iSpace
+           })
+        )
       };
+    case GAME_TILE_SELECTED:
+      return {
+        ...state,
+        selected: [action.payload.iSpace],
+        uiHint: action.payload.uiHint
+      }
     default:
       return state
   }
@@ -114,18 +174,28 @@ export default (state = initialState, action) => {
 // initialize the spaces array
 export const spacesInit = () => {
   return {
-    type: GAME_INIT
+    type: SPACES_INIT
   };
 }
 
+export const playersInit = (name1 = 'Player One', name2 = 'Player Two') => {
+  return {
+    type: PLAYERS_INIT,
+    payload: {
+      names: [name1, name2]
+    }
+  }
+}
+
 // state machine for clicking on tiles
-export const spaceClicked = (i, gameState) => {
+export const spaceClicked = (iSpace, gameState, iPlayer = 0) => {
   switch (gameState) {
     case GAME_CHOOSE_DUKE_POSITION:
       return {
         type: GAME_DUKE_PLACED,
         payload: {
-          iSpace: i,
+          iPlayer,
+          iSpace,
           uiHint: 'Please click on a highlighted space to place your first Footman'
         }
       }
@@ -133,7 +203,8 @@ export const spaceClicked = (i, gameState) => {
       return {
         type: GAME_CHOOSE_FOOTMAN1_POSITION,
         payload: {
-          iSpace: i,
+          iPlayer,
+          iSpace,
           uiHint: 'Please click on a highlighted space to place your second Footman'
         }
       };
@@ -141,8 +212,18 @@ export const spaceClicked = (i, gameState) => {
       return {
         type: GAME_CHOOSE_FOOTMAN2_POSITION,
         payload: {
-          iSpace: i,
+          iPlayer,
+          iSpace,
           uiHint: 'Select a tile to move OR draw a new tile'
+        }
+      }
+    case GAME_SELECT_OR_DRAW: 
+      return {
+        type: GAME_TILE_SELECTED,
+        payload: {
+          iPlayer,
+          iSpace,
+          uiHint: 'Click on a highlighted space to move this tile'
         }
       }
     default:

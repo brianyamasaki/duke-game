@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
 import { BOARD_SPACE_DIVISOR } from '../../../../constants';
-import { spacesInit, spaceClicked } from '../../../../modules/boardState';
+import { spacesInit, spaceClicked, GAME_SELECT_OR_DRAW, playersInit } from '../../../../modules/boardState';
+import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 
 import './index.css';
 
@@ -13,6 +14,7 @@ class SpacesOnBoard extends Component {
 
   componentDidMount() {
     this.props.spacesInit();
+    this.props.playersInit();
   }
 
   componentDidUpdate(prevProps) {
@@ -26,15 +28,21 @@ class SpacesOnBoard extends Component {
     spaceClicked(i, boardState.gameState);
   }
 
+  renderTile = (tile) => {
+    if (!tile.type) return;
+    return <Tile type={tile.type} player={tile.iPlayer} />
+  }
+
   renderSpace = (space, i) => {
-    const height = `${Math.floor(this.props.boardWidth / BOARD_SPACE_DIVISOR)}px`;
+    const { boardWidth, boardState } = this.props;
+    const height = `${Math.floor(boardWidth / BOARD_SPACE_DIVISOR)}px`;
     const style = {
       height,
       width: height
     };
-    const isHighlighted = this.props.boardState.highlighted.indexOf(i) !== -1;
-    const isSelected = this.props.boardState.selected.indexOf(i) !== -1;
-    const tile = space.tile ? <Tile type={space.tile} /> : '';
+    const isHighlighted = boardState.highlighted.indexOf(i) !== -1;
+    const isSelected = boardState.selected.indexOf(i) !== -1;
+    const isTileSelectable = space.type && boardState.gameState === GAME_SELECT_OR_DRAW;
     const classes = ['space'];
     if (isHighlighted) {
       classes.push('highlight');
@@ -46,18 +54,19 @@ class SpacesOnBoard extends Component {
       <span 
         key={i} 
         className={classes.join(' ')}
-        onClick={e => { isHighlighted && this.onClick(e, i)}}
+        onClick={e => { (isHighlighted || isTileSelectable) && this.onClick(e, i)}}
         style={style}>
-        {tile}
+        { this.renderTile(space)}
       </span> 
     );
   }
 
   renderSpaces() {
-    if (!this.props.boardState.spaces) {
+    const { tiledSpaces } = this.props;
+    if (!tiledSpaces) {
       return;
     }
-    return this.props.boardState.spaces.map(this.renderSpace);
+    return tiledSpaces.map(this.renderSpace);
   }
 
   render() {
@@ -68,11 +77,13 @@ class SpacesOnBoard extends Component {
 const mapStateToProps = state => {
   const { boardState } = state;
   return {
+    tiledSpaces: tiledSpaces(state),
     boardState
   };
 };
 
 export default connect(mapStateToProps, {
   spacesInit,
-  spaceClicked
+  spaceClicked,
+  playersInit
 })(SpacesOnBoard);

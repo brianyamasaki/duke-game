@@ -1,0 +1,12 @@
+export const POS_ABOVE = 'POS_ABOVE';
+export const POS_BELOW = 'POS_BELOW';
+export const POS_LEFT = 'POS_LEFT';
+export const POS_RIGHT = 'POS_RIGHT';
+export const SLIDE_LEFT = 'SLIDE_LEFT';
+export const SLIDE_RIGHT = 'SLIDE_RIGHT';
+export const SLIDE_UP = 'SLIDE_UP';
+export const SLIDE_DOWN = 'SLIDE_DOWN';
+export const SLIDE_DIAG_UP_LEFT = 'SLIDE_DIAG_UP_LEFT';
+export const SLIDE_DIAG_UP_RIGHT = 'SLIDE_DIAG_UP_RIGHT';
+export const SLIDE_DIAG_DOWN_LEFT = 'SLIDE_DIAG_DOWN_LEFT';
+export const SLIDE_DIAG_DOWN_RIGHT = 'SLIDE_DIAG_DOWN_RIGHT';

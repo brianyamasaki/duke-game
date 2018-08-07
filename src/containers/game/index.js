@@ -6,7 +6,6 @@ class GamePage extends Component {
   render() {
     return (
       <Grid>
-        <h1 className='text-center'>The Duke</h1>
         <Game />
       </Grid>
     );
