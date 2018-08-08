@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
 import { BOARD_SPACE_DIVISOR } from '../../../../constants';
-import { spacesInit, spaceClicked, GAME_SELECT_OR_DRAW, playersInit } from '../../../../modules/boardState';
+import { spacesInit, spaceClicked, GAME_SELECT_OR_DRAW, playersInit, cancelSelection } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 
 import './index.css';
@@ -31,11 +31,11 @@ class SpacesOnBoard extends Component {
 
   renderTile = (tile) => {
     if (!tile.type) return;
-    return <Tile type={tile.type} player={tile.iPlayer} />
+    return <Tile type={tile.type} player={tile.iPlayer} moves={tile.moves} />
   }
 
   renderSpace = (space, i) => {
-    const { boardWidth, boardState } = this.props;
+    const { boardWidth, boardState, cancelSelection } = this.props;
     const height = `${Math.floor(boardWidth / BOARD_SPACE_DIVISOR)}px`;
     const style = {
       height,
@@ -55,7 +55,13 @@ class SpacesOnBoard extends Component {
       <span 
         key={i} 
         className={classes.join(' ')}
-        onClick={e => { (isHighlighted || isTileSelectable) && this.onClick(e, i, space.type, space.moves)}}
+        onClick={e => {
+          if (isSelected) {
+            cancelSelection();
+            return;
+          } 
+          (isHighlighted || isTileSelectable) && this.onClick(e, i, space.type, space.moves)
+        }}
         style={style}>
         { this.renderTile(space)}
       </span> 
@@ -86,5 +92,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   spacesInit,
   spaceClicked,
-  playersInit
+  playersInit,
+  cancelSelection
 })(SpacesOnBoard);

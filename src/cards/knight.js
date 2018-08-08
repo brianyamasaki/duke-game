@@ -1,7 +1,7 @@
-import { SLIDE_UP } from './cardConstants';
+import { TILE_KNIGHT, SLIDE_UP } from './cardConstants';
 
 export const knightMoves = {
-  type: 'knight',
+  type: TILE_KNIGHT,
   odd: {
     move: [
       { row: 0, col: -1 },

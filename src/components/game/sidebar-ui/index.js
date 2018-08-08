@@ -20,10 +20,30 @@ class SidebarUi extends Component {
     }
   }
 
-  renderDrawTileButton() {
-    if (this.props.boardState.gameState !== GAME_SELECT_OR_DRAW)
+  renderDrawTileButton = (i) => {
+    const { boardState } = this.props;
+
+    if (boardState.currentPlayer !== i || boardState.gameState !== GAME_SELECT_OR_DRAW)
       return;
     return <Button bsStyle='primary' onClick={()=> {window.alert('Not Yet Implemented')}}>Draw Tile</Button>;
+  }
+
+  renderHint = (i) => {
+    if (this.props.boardState.currentPlayer === i) {
+      return (
+        <p>{this.state.uiHint}</p>
+      );
+    }
+  }
+
+  renderPlayer = (player, i) => {
+    return (
+      <div>
+        <h4 className='text-center'>{player.name}</h4>
+        {this.renderHint(i)}
+        {this.renderDrawTileButton(i)}
+      </div>
+    );
   }
 
   render() {
@@ -31,9 +51,8 @@ class SidebarUi extends Component {
 
     return (
       <div className='sidebar-ui pull-right text-center'>
-        <h3 className='text-center'>{boardState.players[0].name}</h3>
-        {this.renderDrawTileButton()}
-        <p>{this.state.uiHint}</p>
+        {boardState.players.map(this.renderPlayer)} 
+
       </div>
     );
   }

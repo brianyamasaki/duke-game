@@ -1,7 +1,22 @@
-import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
-import { POS_ABOVE, POS_LEFT, POS_RIGHT, POS_BELOW, shuffleDeck } from '../cards';
+import { 
+  BOARD_ROW_COUNT, 
+  BOARD_COL_COUNT
+} from '../constants';
+import { 
+  shuffleDeck,
+  TILE_DUKE,
+  TILE_FOOTMAN,
+  HIGHLIGHTS_DUKES_FOOTMEN
+ } from '../cards';
 import { cloneObject } from '../shared';
 import { highlightsFromType } from '../cards/cardHighlights';
+import {
+  HINT_SELECT_OR_DRAW,
+  HINT_PLACE_DUKE,
+  HINT_PLACE_FIRST_FOOTMAN,
+  HINT_PLACE_SECOND_FOOTMAN,
+  HINT_MOVE_TILE
+} from '../strings';
 
 export const SPACES_INIT = 'SPACES_INIT';
 export const GAME_CHOOSE_DUKE_POSITION = 'GAME_CHOOSE_DUKE_POSITION';
@@ -10,8 +25,7 @@ export const GAME_CHOOSE_FOOTMAN1_POSITION = 'GAME_CHOOSE_FOOTMAN1_POSITION';
 export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
-
-export const highlightsForDukesFootman = [POS_LEFT, POS_RIGHT, POS_ABOVE];
+export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
 
 export const PLAYERS_INIT = 'PLAYERS_INIT';
 
@@ -29,7 +43,7 @@ const initialState = {
   selectedTileType: '',
   currentPlayer: 0,
   players: [playerDft, playerDft],
-  uiHint: 'Please click on a highlighted space to place your Duke',
+  uiHint: '',
 };
 
 export const rowColToIndex = (row, col) => (row * BOARD_COL_COUNT + col);
@@ -60,37 +74,9 @@ export const spacesNew = () => {
   return spaces;
 }
 
-const pushHighlight = (highlights, skipIndexes, iHighlight) => {
-  if (skipIndexes.indexOf(iHighlight) === -1) {
-    highlights.push(iHighlight);
-  }
-}
-
-const highlightSpaces = (iSpace, positions, skipIndexes = [], player) => {
-  const highlights = [];
-  let iHighlight;
-  if (positions.indexOf(POS_ABOVE) !== -1) {
-    iHighlight = player ? iSpace + BOARD_COL_COUNT : iSpace - BOARD_COL_COUNT;
-    pushHighlight(highlights, skipIndexes, iHighlight);
-  }
-  if (positions.indexOf(POS_LEFT) !== -1) {
-    iHighlight = player ? iSpace + 1 : iSpace - 1;
-    pushHighlight(highlights, skipIndexes, iHighlight);
-  }
-  if (positions.indexOf(POS_RIGHT) !== -1) {
-    iHighlight = player ? iSpace - 1 : iSpace + 1;
-    pushHighlight(highlights, skipIndexes, iHighlight);
-  }
-  if (positions.indexOf(POS_BELOW) !== -1) {
-    iHighlight = player ? iSpace - BOARD_COL_COUNT : iSpace + BOARD_COL_COUNT;
-    pushHighlight(highlights, skipIndexes, iHighlight);
-  }
-  return highlights;
-}
-
 // find the index of the space the Duke is on
 const dukeIndex = (tilesOnBoard) => {
-  const dukeTileInfo = tilesOnBoard.find(tileInfo =>(tileInfo.type === 'duke'));
+  const dukeTileInfo = tilesOnBoard.find(tileInfo =>(tileInfo.type === TILE_DUKE));
   return dukeTileInfo.iSpace;
 }
 
@@ -101,8 +87,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         spaces: spacesNew(),
-        highlighted: [32, 33],
-        gameState: GAME_CHOOSE_DUKE_POSITION
+        highlighted: state.currentPlayer === 0 ? [32, 33]: [2,3],
+        gameState: GAME_CHOOSE_DUKE_POSITION,
+        uiHint: HINT_PLACE_DUKE
       }
     case PLAYERS_INIT:
       return {
@@ -119,7 +106,7 @@ export default (state = initialState, action) => {
         state.players, 
         state.currentPlayer, 
         (player) => player.tilesOnBoard.push({
-          type: 'duke',
+          type: TILE_DUKE,
           iSpace: action.payload.iSpace,
           moves: 1
          })
@@ -127,7 +114,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN1_POSITION,
-        highlighted: highlightSpaces(action.payload.iSpace, highlightsForDukesFootman),
+        highlighted: highlightsFromType(
+          action.payload.iSpace, 
+          HIGHLIGHTS_DUKES_FOOTMEN,
+          false,
+          state.currentPlayer
+        ),
         uiHint: action.payload.uiHint,
         players: playersClone
       };
@@ -135,16 +127,18 @@ export default (state = initialState, action) => {
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN2_POSITION,
-        highlighted: highlightSpaces(
-            dukeIndex(state.players[state.currentPlayer].tilesOnBoard), 
-            highlightsForDukesFootman, [action.payload.iSpace]
-          ),
+        highlighted: highlightsFromType(
+          dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
+          HIGHLIGHTS_DUKES_FOOTMEN,
+          false,
+          state.currentPlayer
+        ),
         uiHint: action.payload.uiHint,
         players: cloneAndModifyPlayer(
           state.players, 
           state.currentPlayer, 
           (player) => player.tilesOnBoard.push({
-            type: 'footman',
+            type: TILE_FOOTMAN,
             iSpace: action.payload.iSpace,
             moves: 1
            })
@@ -160,11 +154,19 @@ export default (state = initialState, action) => {
           state.players, 
           state.currentPlayer, 
           (player) => player.tilesOnBoard.push({
-            type: 'footman',
+            type: TILE_FOOTMAN,
             iSpace: action.payload.iSpace,
             moves: 1
            })
         )
+      };
+    case GAME_SELECT_OR_DRAW:
+      return {
+        ...state,
+        gameState: GAME_SELECT_OR_DRAW,
+        highlighted: [],
+        selected: [],
+        uiHint: HINT_SELECT_OR_DRAW
       };
     case GAME_TILE_SELECTED:
       return {
@@ -175,10 +177,29 @@ export default (state = initialState, action) => {
           action.payload.isOdd,
           state.currentPlayer
         ),
-        selectedTileType: action.payload.tileType,
+        gameState: GAME_TILE_SELECTED,
         selected: [action.payload.iSpace],
         uiHint: action.payload.uiHint,
         selectedTileType: action.payload.tileType
+      }
+    case GAME_TILE_MOVE:
+      console.log('must implement the tile move');
+      return {
+        ...state,
+        highlighted: [],
+        selected: [],
+        players: cloneAndModifyPlayer(
+          state.players,
+          state.currentPlayer,
+          (player) => {
+            const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
+            if (tileSelected) {
+              tileSelected.iSpace = action.payload.iSpace;
+              tileSelected.moves += 1;
+            }
+          }
+        ),
+        gameState: GAME_SELECT_OR_DRAW
       }
     default:
       return state
@@ -201,6 +222,12 @@ export const playersInit = (name1 = 'Player One', name2 = 'Player Two') => {
   }
 }
 
+export const cancelSelection = () => {
+  return {
+    type: GAME_SELECT_OR_DRAW
+  };
+}
+
 // state machine for clicking on tiles
 export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
   switch (gameState) {
@@ -209,7 +236,7 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
         type: GAME_DUKE_PLACED,
         payload: {
           iSpace,
-          uiHint: 'Please click on a highlighted space to place your first Footman'
+          uiHint: HINT_PLACE_FIRST_FOOTMAN
         }
       }
     case GAME_CHOOSE_FOOTMAN1_POSITION:
@@ -217,7 +244,7 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
         type: GAME_CHOOSE_FOOTMAN1_POSITION,
         payload: {
           iSpace,
-          uiHint: 'Please click on a highlighted space to place your second Footman'
+          uiHint: HINT_PLACE_SECOND_FOOTMAN
         }
       };
     case GAME_CHOOSE_FOOTMAN2_POSITION:
@@ -225,7 +252,7 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
         type: GAME_CHOOSE_FOOTMAN2_POSITION,
         payload: {
           iSpace,
-          uiHint: 'Select a tile to move OR draw a new tile'
+          uiHint: HINT_SELECT_OR_DRAW
         }
       }
     case GAME_SELECT_OR_DRAW: 
@@ -233,13 +260,27 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
         type: GAME_TILE_SELECTED,
         payload: {
           iSpace,
-          uiHint: 'Click on a highlighted space to move this tile',
+          uiHint: HINT_MOVE_TILE,
           tileType,
           isOdd
         }
       }
+    case GAME_TILE_SELECTED:
+      return {
+        type: GAME_TILE_MOVE,
+        payload: {
+          iSpace
+        }
+      };
+    case GAME_TILE_MOVE:
+      return {
+        type: GAME_TILE_MOVE,
+        payload: {
+          iSpace
+        }
+      }
     default:
-      console.error(`gameState passed to spaceClicked() is ${gameState}`);
+      window.alert(`Unhandled gameState passed to spaceClicked() is ${gameState}`);
       break;
   }
 }

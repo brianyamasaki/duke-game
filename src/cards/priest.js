@@ -1,4 +1,5 @@
 import { 
+  TILE_PRIEST,
   SLIDE_DIAG_DOWN_LEFT, 
   SLIDE_DIAG_DOWN_RIGHT, 
   SLIDE_DIAG_UP_LEFT, 
@@ -6,7 +7,7 @@ import {
 } from './cardConstants';
 
 export const priestMoves = {
-  type: 'priest',
+  type: TILE_PRIEST,
   odd: {
     slide: [
       SLIDE_DIAG_UP_LEFT, 

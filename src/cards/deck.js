@@ -1,3 +1,10 @@
+import { 
+  TILE_DUKE,
+  TILE_FOOTMAN,
+  TILE_KNIGHT,
+  TILE_PRIEST,
+  TILE_SEER
+} from './cardConstants';
 import { dukeMoves } from './duke';
 import { footmanMoves } from './footman'
 import { seerMoves } from './seer';
@@ -7,19 +14,19 @@ import { knightMoves } from './knight';
 const createCard = type => {
   let moves;
   switch(type) {
-    case 'duke':
+    case TILE_DUKE:
       moves = dukeMoves;
       break;
-    case 'footman':
+    case TILE_FOOTMAN:
       moves = footmanMoves;
       break;
-    case 'seer':
+    case TILE_SEER:
       moves = seerMoves;
       break;
-    case 'priest':
+    case TILE_PRIEST:
       moves = priestMoves;
       break;
-    case 'knight':
+    case TILE_KNIGHT:
       moves = knightMoves;
       break;
     default:
@@ -35,11 +42,11 @@ const createCard = type => {
 }
 export const shuffleDeck = () => {
   const deck = [];
-  deck.push(createCard('footman'));
-  deck.push(createCard('footman'));
-  deck.push(createCard('knight'));
-  deck.push(createCard('seer'));
-  deck.push(createCard('priest'));
+  deck.push(createCard(TILE_FOOTMAN));
+  deck.push(createCard(TILE_FOOTMAN));
+  deck.push(createCard(TILE_KNIGHT));
+  deck.push(createCard(TILE_SEER));
+  deck.push(createCard(TILE_PRIEST));
 
   return deck;
 }

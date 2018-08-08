@@ -1,5 +1,7 @@
+import { TILE_FOOTMAN } from './cardConstants';
+
 export const footmanMoves = {
-  type: 'footman',
+  type: TILE_FOOTMAN,
   odd: {
     move: [
       { row: -1, col: 0 },

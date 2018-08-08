@@ -1,5 +1,7 @@
+import { TILE_SEER } from './cardConstants';
+
 export const seerMoves = {
-  type: 'seer',
+  type: TILE_SEER,
   odd: {
     move: [
       { row: -1, col: -1},
