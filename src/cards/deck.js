@@ -45,7 +45,10 @@ export const shuffleDeck = () => {
   deck.push(createCard(TILE_FOOTMAN));
   deck.push(createCard(TILE_FOOTMAN));
   deck.push(createCard(TILE_KNIGHT));
+  deck.push(createCard(TILE_KNIGHT));
   deck.push(createCard(TILE_SEER));
+  deck.push(createCard(TILE_SEER));
+  deck.push(createCard(TILE_PRIEST));
   deck.push(createCard(TILE_PRIEST));
 
   return deck;

@@ -113,14 +113,21 @@ const spacesAlongRow = (iSpace, sign) => {
   const spaces = [];
   let i;
   if (sign === 1) {
+    // iterate to lesser numbered spaces
     for (i = Math.floor(iSpace / BOARD_ROW_COUNT) * BOARD_ROW_COUNT; i <= iSpace; i++) {
       spaces.push(i);
     }
   } else {
-    for (i = Math.ceil(iSpace / BOARD_ROW_COUNT) * BOARD_ROW_COUNT - 1; i >= iSpace; i--) {
+    // iterate to higher numbered spaces
+    if (iSpace % BOARD_ROW_COUNT === 0) {
+      i = iSpace + BOARD_ROW_COUNT - 1;
+    } else {
+      i = Math.ceil(iSpace / BOARD_ROW_COUNT) * BOARD_ROW_COUNT - 1;
+    }
+    for (; i >= iSpace; i--) {
       spaces.push(i);
     }
-  }
+}
   return spaces;
 }
 

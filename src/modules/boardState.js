@@ -26,6 +26,8 @@ export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
 export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
+export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
+export const GAME_DEBUG_MODE = 'GAME_DEBUG_MODE';
 
 export const PLAYERS_INIT = 'PLAYERS_INIT';
 
@@ -35,15 +37,23 @@ const playerDft = {
   tilesOnBoard: []
 };
 
+const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
+const SELECTED_TILE_ON_BOARD = 'SELECTED_TILE_ON_BOARD';
+const selectedTileDft = {
+  tileType: '',
+  selectionType: undefined
+}
+
 const initialState = {
   spaces: [],
   selected: [],
   highlighted: [],
   gameState: '',
-  selectedTileType: '',
+  selectedTile: selectedTileDft,
   currentPlayer: 0,
   players: [playerDft, playerDft],
   uiHint: '',
+  gameDebugMode: false
 };
 
 export const rowColToIndex = (row, col) => (row * BOARD_COL_COUNT + col);
@@ -80,6 +90,12 @@ const dukeIndex = (tilesOnBoard) => {
   return dukeTileInfo.iSpace;
 }
 
+export const setDebugMode = (mode) => {
+  return {
+    type: GAME_DEBUG_MODE,
+    payload: mode
+  };
+}
 export default (state = initialState, action) => {
   let playersClone;
   switch (action.type) {
@@ -101,6 +117,11 @@ export default (state = initialState, action) => {
           return playerClone;
         })
       }
+    case GAME_DEBUG_MODE:
+      return {
+        ...state,
+        gameDebugMode: action.payload
+      };
     case GAME_DUKE_PLACED:
       playersClone = cloneAndModifyPlayer(
         state.players, 
@@ -180,10 +201,12 @@ export default (state = initialState, action) => {
         gameState: GAME_TILE_SELECTED,
         selected: [action.payload.iSpace],
         uiHint: action.payload.uiHint,
-        selectedTileType: action.payload.tileType
+        selectedTile: {
+          tileType: action.payload.tileType,
+          selectionType: SELECTED_TILE_ON_BOARD
+        }
       }
     case GAME_TILE_MOVE:
-      console.log('must implement the tile move');
       return {
         ...state,
         highlighted: [],
@@ -192,14 +215,43 @@ export default (state = initialState, action) => {
           state.players,
           state.currentPlayer,
           (player) => {
-            const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
-            if (tileSelected) {
-              tileSelected.iSpace = action.payload.iSpace;
-              tileSelected.moves += 1;
+            if (state.selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
+              const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
+              if (tileSelected) {
+                tileSelected.iSpace = action.payload.iSpace;
+                tileSelected.moves += 1;
+              }
+            } else {
+              const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === state.selectedTile.tileType);
+              if (tileIndex !== -1) {
+                const tiles = player.tilesInBag.splice(tileIndex, 1);
+                tiles[0].iSpace = action.payload.iSpace;
+                tiles[0].moves = 1;
+                player.tilesOnBoard = player.tilesOnBoard.concat(tiles);
+              }
             }
           }
         ),
-        gameState: GAME_SELECT_OR_DRAW
+        gameState: GAME_SELECT_OR_DRAW,
+        selectedTile: selectedTileDft
+      }
+    case GAME_SELECT_TILE_IN_BAG:
+      const highlighted = state.gameDebugMode ? 
+        [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35] :
+        highlightsFromType(
+          dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
+          HIGHLIGHTS_DUKES_FOOTMEN,
+          false,
+          state.currentPlayer
+        );
+      return {
+        ...state,
+        gameState: GAME_TILE_MOVE,
+        selectedTile: {
+          selectionType: SELECTED_TILE_IN_BAG,
+          tileType: action.payload
+        },
+        highlighted
       }
     default:
       return state
@@ -226,6 +278,14 @@ export const cancelSelection = () => {
   return {
     type: GAME_SELECT_OR_DRAW
   };
+}
+
+// type is only passed in during debug mode
+export const selectTileInBag = (type) => {
+  return {
+    type: GAME_SELECT_TILE_IN_BAG,
+    payload: type
+  }
 }
 
 // state machine for clicking on tiles

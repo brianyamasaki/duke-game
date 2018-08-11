@@ -1,35 +1,52 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
-import { GAME_SELECT_OR_DRAW } from '../../../modules/boardState';
+import { GAME_SELECT_OR_DRAW, setDebugMode, selectTileInBag } from '../../../modules/boardState';
+import { 
+  TILE_KNIGHT,
+  TILE_FOOTMAN,
+  TILE_PRIEST,
+  TILE_SEER
+} from '../../../cards';
 
 import './index.css';
 
 class SidebarUi extends Component {
   state = {
-    uiHint: ''
-  }
+    uiHint: '',
+    gameDebugMode: false
+  };
 
   componentDidMount() {
-    this.setState({ uiHint: this.props.boardState.uiHint });
+    this.setState({ uiHint: this.props.uiHint });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.boardState.gameState !== this.props.boardState.gameState) {
-      this.setState({ uiHint: this.props.boardState.uiHint});
+    if (prevProps.gameState !== this.props.gameState) {
+      this.setState({ uiHint: this.props.uiHint});
+    }
+    if (prevProps.gameDebugMode !== this.props.gameDebugMode) {
+      this.setState({ gameDebugMode: this.props.gameDebugMode});
     }
   }
 
   renderDrawTileButton = (i) => {
-    const { boardState } = this.props;
+    const { currentPlayer, gameState, selectTileInBag } = this.props;
 
-    if (boardState.currentPlayer !== i || boardState.gameState !== GAME_SELECT_OR_DRAW)
+    if (currentPlayer !== i || gameState !== GAME_SELECT_OR_DRAW)
       return;
-    return <Button bsStyle='primary' onClick={()=> {window.alert('Not Yet Implemented')}}>Draw Tile</Button>;
+    return (
+      <div>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_KNIGHT)}>Draw Knight</Button>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_SEER)}>Draw Seer</Button>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_PRIEST)}>Draw Priest</Button>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_FOOTMAN)}>Draw Footman</Button>
+      </div>
+    );
   }
 
   renderHint = (i) => {
-    if (this.props.boardState.currentPlayer === i) {
+    if (this.props.currentPlayer === i) {
       return (
         <p>{this.state.uiHint}</p>
       );
@@ -46,24 +63,48 @@ class SidebarUi extends Component {
     );
   }
 
+  renderDebugControl = () => {
+    const { gameDebugMode, setDebugMode } = this.props;
+    return (
+      <div>
+        <label for="debugMode">Debug Mode</label>&nbsp;
+        <input id="debugMode" type="checkbox" value={this.state.gameDebugMode} onClick={() => setDebugMode(!gameDebugMode)} />
+      </div>
+    )
+  }
+
   render() {
-    const { boardState } = this.props;
+    const { players } = this.props;
 
     return (
       <div className='sidebar-ui pull-right text-center'>
-        {boardState.players.map(this.renderPlayer)} 
-
+        {players.map(this.renderPlayer)} 
+        {this.renderDebugControl()}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ boardState, players }) => {
+const mapStateToProps = ({ boardState }) => {
+  const { 
+    gameState, 
+    players,
+    currentPlayer,
+    uiHint,
+    gameDebugMode 
+  } = boardState;
   return {
-    boardState
-  }
+    gameState,
+    players,
+    currentPlayer,
+    uiHint,
+    gameDebugMode
+  };
 }
 
 
 
-export default connect(mapStateToProps)(SidebarUi);
+export default connect(mapStateToProps, {
+  setDebugMode,
+  selectTileInBag
+})(SidebarUi);
