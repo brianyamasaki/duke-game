@@ -56,16 +56,6 @@ const initialState = {
   gameDebugMode: false
 };
 
-export const rowColToIndex = (row, col) => (row * BOARD_COL_COUNT + col);
-
-export const indexToRowCol = (index) => {
-  const row = Math.floor(index / BOARD_COL_COUNT);
-  return {
-    row,
-    col: index - (row * BOARD_COL_COUNT)
-  };
-}
-
 const cloneAndModifyPlayer = (players, iPlayer, fn) => {
   return players.map((player, i) => {
     const playerCopy = cloneObject(player);

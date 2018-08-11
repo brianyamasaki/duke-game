@@ -15,6 +15,7 @@ import {
   SLIDE_DIAG_DOWN_RIGHT
 } from './cardConstants';
 import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
+import { rowColToIndex, indexToRowCol } from '../shared';
 import { dukeMoves, dukeFootmen } from './duke';
 import { footmanMoves } from './footman';
 import { knightMoves } from './knight';
@@ -75,73 +76,73 @@ const spacesFromSlideRules = (iSpace, rules, iPlayer) => {
   const sign = iPlayer ? -1 : 1;
   let spaces = [];
   rules.forEach(slide => {
-    switch (slide) {
-      case SLIDE_UP:
-        spaces = spaces.concat(spacesAlongColumn(iSpace, sign));
-        break;
-      case SLIDE_DOWN:
-        spaces =  spaces.concat(spacesAlongColumn(iSpace, -1 * sign));
-        break;
-      case SLIDE_LEFT:
-        spaces = spaces.concat(spacesAlongRow(iSpace, sign));
-        break;
-      case SLIDE_RIGHT:
-        spaces = spaces.concat(spacesAlongRow(iSpace, -1 * sign));
-        break;
-      case SLIDE_DIAG_UP_LEFT:
-      case SLIDE_DIAG_UP_RIGHT:
-      case SLIDE_DIAG_DOWN_LEFT:
-      case SLIDE_DIAG_DOWN_RIGHT:
-        break;
-      default:
-        window.alert('Illegal Slide rule in tile rules');
-        break;
-    }
+    spaces = spaces.concat(spacesAlongSlide(iSpace, sign, slide));
   })
   return spaces;
 }
 
 const spacesFromRowColRules = (iSpace, rules, iPlayer) => {
   const sign = iPlayer ? -1 : 1;
-  const spaces = rules.map(rule => {
-    return iSpace + (rule.row * sign * BOARD_ROW_COUNT) + (sign * rule.col);
+  const { row, col } = indexToRowCol(iSpace);
+  const spaces = [];
+  rules.forEach(rule => {
+    const rowRule = row + (rule.row * sign);
+    const colRule = col + (rule.col * sign);
+    if (rowRule >= 0 && 
+      rowRule < BOARD_ROW_COUNT &&
+      colRule >= 0 && 
+      colRule < BOARD_COL_COUNT) {
+      spaces.push(rowColToIndex(rowRule, colRule));
+    }
   })
   return spaces;
 }
 
-const spacesAlongRow = (iSpace, sign) => {
+const spacesAlongSlide = (iSpace, sign, slide) => {
   const spaces = [];
-  let i;
-  if (sign === 1) {
-    // iterate to lesser numbered spaces
-    for (i = Math.floor(iSpace / BOARD_ROW_COUNT) * BOARD_ROW_COUNT; i <= iSpace; i++) {
-      spaces.push(i);
-    }
-  } else {
-    // iterate to higher numbered spaces
-    if (iSpace % BOARD_ROW_COUNT === 0) {
-      i = iSpace + BOARD_ROW_COUNT - 1;
-    } else {
-      i = Math.ceil(iSpace / BOARD_ROW_COUNT) * BOARD_ROW_COUNT - 1;
-    }
-    for (; i >= iSpace; i--) {
-      spaces.push(i);
-    }
-}
+  const { row, col } = indexToRowCol(iSpace);
+  let rule, 
+    rowT = row, 
+    colT = col;
+  switch(slide) {
+    case SLIDE_DIAG_UP_LEFT:
+      rule = { row: -1 * sign, col: -1 * sign };
+      break;
+    case SLIDE_DIAG_UP_RIGHT:
+      rule = { row: -1 * sign, col: 1 * sign };
+      break;
+    case SLIDE_DIAG_DOWN_LEFT:
+      rule = { row: 1 * sign, col: -1 * sign };
+      break;
+    case SLIDE_DIAG_DOWN_RIGHT:
+      rule = { row: 1 * sign, col: 1 * sign };
+      break;
+    case SLIDE_UP:
+      rule = { row: -1 * sign, col: 0 };
+      break;
+    case SLIDE_DOWN:
+      rule = { row: 1 * sign, col: 0 };
+      break;
+    case SLIDE_LEFT:
+      rule = { row: 0, col: -1 * sign };
+      break;
+    case SLIDE_RIGHT:
+      rule = { row: 0, col: 1 * sign };
+      break;
+    default:
+      window.alert('Illegal SLIDE type ' + slide);
+      break;
+  }
+  for (let i = 0; i < BOARD_ROW_COUNT; i++) {
+    colT += rule.col;
+    rowT += rule.row;
+    if (colT >= 0 && colT < BOARD_ROW_COUNT &&
+      rowT >= 0 && rowT < BOARD_ROW_COUNT) {
+        spaces.push(rowColToIndex(rowT, colT));
+      } else {
+        break;
+      }
+  }
   return spaces;
 }
 
-const spacesAlongColumn = (iSpace, sign) => {
-  const spaces = [];
-  let i = iSpace;
-  if (sign === 1) {
-    for (; i >= 0; i -= BOARD_ROW_COUNT ) {
-      spaces.push(i);
-    }
-  } else {
-    for (; i < BOARD_ROW_COUNT * BOARD_COL_COUNT; i += BOARD_ROW_COUNT) {
-      spaces.push(i);
-    }
-  }  
-  return spaces;
-}

@@ -1,1 +1,2 @@
-export * from './utilities.js';
+export * from './utilities';
+export * from './boardUtilities';
