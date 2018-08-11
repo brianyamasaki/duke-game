@@ -1,6 +1,6 @@
 {
   "private": true,
-  "homepage": "https://create-react-app-redux.now.sh",
+  "homepage": "http://duke.yamasakidesign.com/",
   "scripts": {
     "deploy": "now && now alias",
     "build-css": "node-sass-chokidar src/ -o src/",
