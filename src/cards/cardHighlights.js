@@ -16,7 +16,16 @@ import {
   TILE_RANGER,
   TILE_PIKEMAN
 } from './cardConstants';
-import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
+import { 
+  BOARD_ROW_COUNT, 
+  BOARD_COL_COUNT,
+  HIGHLIGHT_MOVE,
+  HIGHLIGHT_JUMP,
+  HIGHLIGHT_SLIDE,
+  HIGHLIGHT_COMMAND,
+  HIGHLIGHT_STRIKE,
+  HIGHLIGHT_JUMPSLIDE
+} from '../constants';
 import { rowColToIndex, indexToRowCol } from '../shared';
 import { dukeMoves, dukeFootmen } from './duke';
 import { footmanMoves } from './footman';
@@ -75,6 +84,14 @@ export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
   return highlightsFromRules(players, iSpace, moves, isOdd, iPlayer);
 };
 
+const highlightTypes = {
+  'move': HIGHLIGHT_MOVE,
+  'jump': HIGHLIGHT_JUMP,
+  'slide': HIGHLIGHT_SLIDE,
+  'jumpslide': HIGHLIGHT_JUMPSLIDE,
+  'strike': HIGHLIGHT_STRIKE,
+}
+
 const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
   let highlights = [];
   const ruleSet = isOdd ? moves.odd : moves.even;
@@ -89,13 +106,30 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
             iSpace, 
             ruleSet[key], 
             iPlayer,
-            key === 'jump')
+            key === 'jump'
+          ).map(space => {
+              return {
+                iSpace: space,
+                type: highlightTypes[key]
+              };
+            })
         );
         break;
       case 'slide':
       case 'jumpSlide':
         highlights = highlights.concat(
-          spacesFromSlideRules(players, iSpace, ruleSet[key], iPlayer, key === 'jumpSlide')
+          spacesFromSlideRules(
+            players, 
+            iSpace, 
+            ruleSet[key], 
+            iPlayer, 
+            key === 'jumpSlide'
+          ).map(space => {
+            return {
+              iSpace: space,
+              type: highlightTypes[key]
+            }
+          })
         );
         break;
       case 'type':

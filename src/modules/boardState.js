@@ -1,6 +1,8 @@
 import { 
   BOARD_ROW_COUNT, 
-  BOARD_COL_COUNT
+  BOARD_COL_COUNT,
+  HIGHLIGHT_MOVE,
+  HIGHLIGHT_STRIKE
 } from '../constants';
 import { 
   shuffleDeck,
@@ -80,6 +82,41 @@ const dukeIndex = (tilesOnBoard) => {
   return dukeTileInfo.iSpace;
 }
 
+const dukePlacement = iPlayer => {
+  if (iPlayer === 0) {
+    return [
+      {
+        iSpace: 32,
+        type: HIGHLIGHT_MOVE
+      },
+      {
+        iSpace: 33,
+        type: HIGHLIGHT_MOVE
+      }
+    ];
+  }
+  return [
+    {
+      iSpace: 2,
+      type: HIGHLIGHT_MOVE
+    },
+    {
+      iSpace: 3,
+      type: HIGHLIGHT_MOVE
+    }
+  ];
+}
+
+const debugHighlights = () => {
+  const highlights = [];
+  for (let i = 0; i < BOARD_COL_COUNT * BOARD_ROW_COUNT; i++) {
+    highlights.push({
+      type: HIGHLIGHT_MOVE,
+      iSpace: i
+    });
+  }
+  return highlights;
+}
 export const setDebugMode = (mode) => {
   return {
     type: GAME_DEBUG_MODE,
@@ -93,7 +130,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         spaces: spacesNew(),
-        highlighted: state.currentPlayer === 0 ? [32, 33]: [2,3],
+        highlighted: dukePlacement(state.currentPlayer),
         gameState: GAME_CHOOSE_DUKE_POSITION,
         uiHint: HINT_PLACE_DUKE
       }
@@ -212,13 +249,17 @@ export default (state = initialState, action) => {
           state.currentPlayer,
           (player) => {
             if (state.selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
+              // move tile currently on the board
               const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
               if (tileSelected) {
-                tileSelected.iSpace = action.payload.iSpace;
+                if (action.payload.highlightType !== HIGHLIGHT_STRIKE) {
+                  tileSelected.iSpace = action.payload.iSpace;
+                }
                 tileSelected.moves += 1;
                 tileSelected.iPlayer = state.currentPlayer;
               }
             } else {
+              // place tile from bag onto the board
               const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === state.selectedTile.tileType);
               if (tileIndex !== -1) {
                 const tiles = player.tilesInBag.splice(tileIndex, 1);
@@ -235,7 +276,7 @@ export default (state = initialState, action) => {
       }
     case GAME_SELECT_TILE_IN_BAG:
       const highlighted = state.gameDebugMode ? 
-        [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35] :
+        debugHighlights() :
         highlightsFromType(
           state.players,
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
@@ -288,7 +329,7 @@ export const selectTileInBag = (type) => {
 }
 
 // state machine for clicking on tiles
-export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
+export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) => {
   switch (gameState) {
     case GAME_CHOOSE_DUKE_POSITION:
       return {
@@ -328,7 +369,8 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd) => {
       return {
         type: GAME_TILE_MOVE,
         payload: {
-          iSpace
+          iSpace,
+          highlightType
         }
       };
     case GAME_TILE_MOVE:
