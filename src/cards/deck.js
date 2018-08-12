@@ -3,13 +3,17 @@ import {
   TILE_FOOTMAN,
   TILE_KNIGHT,
   TILE_PRIEST,
-  TILE_SEER
+  TILE_SEER,
+  TILE_PIKEMAN,
+  TILE_RANGER
 } from './cardConstants';
 import { dukeMoves } from './duke';
 import { footmanMoves } from './footman'
 import { seerMoves } from './seer';
 import { priestMoves } from './priest';
 import { knightMoves } from './knight';
+import { rangerMoves } from './ranger';
+import { pikemanMoves } from './pikeman';
 
 const createCard = type => {
   let moves;
@@ -29,6 +33,12 @@ const createCard = type => {
     case TILE_KNIGHT:
       moves = knightMoves;
       break;
+    case TILE_PIKEMAN:
+      moves = pikemanMoves;
+      break;
+    case TILE_RANGER:
+      moves = rangerMoves;
+      break;
     default:
       window.alert('illegal card type in createCard (deck.js)');
       break;
@@ -40,16 +50,24 @@ const createCard = type => {
     spaceIndex: -1
   }
 }
+
+const deckContents = [
+  { type: TILE_FOOTMAN, count: 2 },
+  { type: TILE_KNIGHT, count: 2 },
+  { type: TILE_SEER, count: 2 },
+  { type: TILE_PRIEST, count: 2 },
+  { type: TILE_PIKEMAN, count: 2 },
+  { type: TILE_RANGER, count: 2 }
+];
+
 export const shuffleDeck = () => {
   const deck = [];
-  deck.push(createCard(TILE_FOOTMAN));
-  deck.push(createCard(TILE_FOOTMAN));
-  deck.push(createCard(TILE_KNIGHT));
-  deck.push(createCard(TILE_KNIGHT));
-  deck.push(createCard(TILE_SEER));
-  deck.push(createCard(TILE_SEER));
-  deck.push(createCard(TILE_PRIEST));
-  deck.push(createCard(TILE_PRIEST));
+
+  deckContents.forEach(countType => {
+    for (let i = 0; i < countType.count; i++ ) {
+      deck.push(createCard(countType.type));
+    }
+  })
 
   return deck;
 }

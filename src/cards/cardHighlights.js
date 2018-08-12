@@ -12,7 +12,9 @@ import {
   SLIDE_DIAG_UP_LEFT,
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
-  SLIDE_DIAG_DOWN_RIGHT
+  SLIDE_DIAG_DOWN_RIGHT,
+  TILE_RANGER,
+  TILE_PIKEMAN
 } from './cardConstants';
 import { BOARD_ROW_COUNT, BOARD_COL_COUNT } from '../constants';
 import { rowColToIndex, indexToRowCol } from '../shared';
@@ -21,6 +23,8 @@ import { footmanMoves } from './footman';
 import { knightMoves } from './knight';
 import { priestMoves } from './priest';
 import { seerMoves } from './seer';
+import { rangerMoves } from './ranger';
+import { pikemanMoves } from './pikeman';
 
 const isTileOnSpace = (players, iSpace) => {
   let tileInfos = [];
@@ -49,8 +53,14 @@ export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
     case TILE_KNIGHT:
       moves = knightMoves;
       break;
+    case TILE_PIKEMAN:
+      moves = pikemanMoves;
+      break;
     case TILE_PRIEST:
       moves = priestMoves;
+      break;
+    case TILE_RANGER:
+      moves = rangerMoves;
       break;
     case TILE_SEER:
       moves = seerMoves;
@@ -72,6 +82,7 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
     switch (key) {
       case 'move':
       case 'jump':
+      case 'strike':
         highlights = highlights.concat(
           spacesFromRowColRules(
             players,
@@ -91,6 +102,7 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
         console.log('Reading rule for tile type ' + ruleSet[key]);
         break;
       default:
+        window.alert(`Rule type ${key} not supported`);
         break;
     }
   }

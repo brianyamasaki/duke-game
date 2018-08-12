@@ -6,7 +6,9 @@ import {
   TILE_KNIGHT,
   TILE_FOOTMAN,
   TILE_PRIEST,
-  TILE_SEER
+  TILE_SEER,
+  TILE_RANGER,
+  TILE_PIKEMAN
 } from '../../../cards';
 
 import './index.css';
@@ -48,6 +50,8 @@ class SidebarUi extends Component {
         <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_SEER)}>Draw Seer</Button>
         <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_PRIEST)}>Draw Priest</Button>
         <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_FOOTMAN)}>Draw Footman</Button>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_RANGER)}>Draw Ranger</Button>
+        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_PIKEMAN)}>Draw Pikeman</Button>
       </div>
     );
   }

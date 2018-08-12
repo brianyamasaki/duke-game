@@ -3,6 +3,8 @@ export const TILE_FOOTMAN = 'footman';
 export const TILE_KNIGHT = 'knight';
 export const TILE_PRIEST = 'priest';
 export const TILE_SEER = 'seer';
+export const TILE_PIKEMAN = 'pikeman';
+export const TILE_RANGER = 'ranger';
 export const HIGHLIGHTS_DUKES_FOOTMEN = 'highlights-dukes-footmen';
 
 export const POS_ABOVE = 'POS_ABOVE';
