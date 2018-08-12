@@ -31,10 +31,17 @@ class SidebarUi extends Component {
   }
 
   renderDrawTileButton = (i) => {
-    const { currentPlayer, gameState, selectTileInBag } = this.props;
+    const { currentPlayer, gameState, selectTileInBag, gameDebugMode } = this.props;
 
     if (currentPlayer !== i || gameState !== GAME_SELECT_OR_DRAW)
       return;
+    if (!gameDebugMode) {
+      return (
+        <div>
+          <Button bsStyle='primary' onClick={() => window.alert('Not Implemented')}>Draw a Tile</Button>
+        </div>
+      )
+    }
     return (
       <div>
         <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_KNIGHT)}>Draw Knight</Button>
@@ -55,7 +62,7 @@ class SidebarUi extends Component {
 
   renderPlayer = (player, i) => {
     return (
-      <div>
+      <div key={i}>
         <h4 className='text-center'>{player.name}</h4>
         {this.renderHint(i)}
         {this.renderDrawTileButton(i)}
@@ -67,7 +74,7 @@ class SidebarUi extends Component {
     const { gameDebugMode, setDebugMode } = this.props;
     return (
       <div>
-        <label for="debugMode">Debug Mode</label>&nbsp;
+        <label htmlFor="debugMode">Debug Mode</label>&nbsp;
         <input id="debugMode" type="checkbox" value={this.state.gameDebugMode} onClick={() => setDebugMode(!gameDebugMode)} />
       </div>
     )

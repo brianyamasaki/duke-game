@@ -119,13 +119,15 @@ export default (state = initialState, action) => {
         (player) => player.tilesOnBoard.push({
           type: TILE_DUKE,
           iSpace: action.payload.iSpace,
-          moves: 1
+          moves: 1,
+          iPlayer: state.currentPlayer
          })
       );
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN1_POSITION,
         highlighted: highlightsFromType(
+          state.players,
           action.payload.iSpace, 
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
@@ -139,6 +141,7 @@ export default (state = initialState, action) => {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN2_POSITION,
         highlighted: highlightsFromType(
+          state.players,
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
@@ -151,7 +154,8 @@ export default (state = initialState, action) => {
           (player) => player.tilesOnBoard.push({
             type: TILE_FOOTMAN,
             iSpace: action.payload.iSpace,
-            moves: 1
+            moves: 1,
+            iPlayer: state.currentPlayer
            })
         )
       };
@@ -167,7 +171,8 @@ export default (state = initialState, action) => {
           (player) => player.tilesOnBoard.push({
             type: TILE_FOOTMAN,
             iSpace: action.payload.iSpace,
-            moves: 1
+            moves: 1,
+            iPlayer: state.currentPlayer
            })
         )
       };
@@ -183,6 +188,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         highlighted: highlightsFromType(
+          state.players,
           action.payload.iSpace,
           action.payload.tileType,
           action.payload.isOdd,
@@ -210,6 +216,7 @@ export default (state = initialState, action) => {
               if (tileSelected) {
                 tileSelected.iSpace = action.payload.iSpace;
                 tileSelected.moves += 1;
+                tileSelected.iPlayer = state.currentPlayer;
               }
             } else {
               const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === state.selectedTile.tileType);
@@ -217,6 +224,7 @@ export default (state = initialState, action) => {
                 const tiles = player.tilesInBag.splice(tileIndex, 1);
                 tiles[0].iSpace = action.payload.iSpace;
                 tiles[0].moves = 1;
+                tiles[0].iPlayer = state.currentPlayer;
                 player.tilesOnBoard = player.tilesOnBoard.concat(tiles);
               }
             }
@@ -229,6 +237,7 @@ export default (state = initialState, action) => {
       const highlighted = state.gameDebugMode ? 
         [ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35] :
         highlightsFromType(
+          state.players,
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,

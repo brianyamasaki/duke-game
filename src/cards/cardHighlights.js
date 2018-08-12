@@ -22,28 +22,50 @@ import { knightMoves } from './knight';
 import { priestMoves } from './priest';
 import { seerMoves } from './seer';
 
-export const highlightsFromType = (iSpace, type, isOdd, iPlayer) => {
-  switch (type) {
-    case TILE_DUKE:
-      return highlightsFromRules(iSpace, dukeMoves, isOdd, iPlayer);
-    case TILE_FOOTMAN:
-      return highlightsFromRules(iSpace, footmanMoves, isOdd, iPlayer);
-    case TILE_KNIGHT:
-      return highlightsFromRules(iSpace, knightMoves, isOdd, iPlayer);
-    case TILE_PRIEST:
-      return highlightsFromRules(iSpace, priestMoves, isOdd,iPlayer);
-    case TILE_SEER:
-      return highlightsFromRules(iSpace, seerMoves, isOdd, iPlayer);
-    case HIGHLIGHTS_DUKES_FOOTMEN:
-      return highlightsFromRules(iSpace, dukeFootmen, isOdd, iPlayer);
-    default:
-      window.alert('No movement rules for tile type ' + type);
-      break;
+const isTileOnSpace = (players, iSpace) => {
+  let tileInfos = [];
+  players.forEach(player => {
+    tileInfos = tileInfos.concat(player.tilesOnBoard);
+  })
+  const index = tileInfos.findIndex(tileInfo => tileInfo.iSpace === iSpace);
+  if (index >= 0) {
+    const tile = tileInfos[index];
+    return {
+      type: tile.type,
+      iPlayer: tile.iPlayer
+    };
   }
-  return [];
 };
 
-const highlightsFromRules = (iSpace, moves, isOdd, iPlayer) => {
+export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
+  let moves;
+  switch (type) {
+    case TILE_DUKE:
+      moves = dukeMoves;
+      break;
+    case TILE_FOOTMAN:
+      moves = footmanMoves;
+      break;
+    case TILE_KNIGHT:
+      moves = knightMoves;
+      break;
+    case TILE_PRIEST:
+      moves = priestMoves;
+      break;
+    case TILE_SEER:
+      moves = seerMoves;
+      break;
+    case HIGHLIGHTS_DUKES_FOOTMEN:
+      moves = dukeFootmen;
+      break;
+    default:
+      window.alert('No movement rules for tile type ' + type);
+      return [];
+  }
+  return highlightsFromRules(players, iSpace, moves, isOdd, iPlayer);
+};
+
+const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
   let highlights = [];
   const ruleSet = isOdd ? moves.odd : moves.even;
   for (let key in ruleSet) {
@@ -52,14 +74,17 @@ const highlightsFromRules = (iSpace, moves, isOdd, iPlayer) => {
       case 'jump':
         highlights = highlights.concat(
           spacesFromRowColRules(
+            players,
             iSpace, 
             ruleSet[key], 
-            iPlayer)
+            iPlayer,
+            key === 'jump')
         );
         break;
       case 'slide':
+      case 'jumpSlide':
         highlights = highlights.concat(
-          spacesFromSlideRules(iSpace, ruleSet[key], iPlayer)
+          spacesFromSlideRules(players, iSpace, ruleSet[key], iPlayer, key === 'jumpSlide')
         );
         break;
       case 'type':
@@ -72,36 +97,42 @@ const highlightsFromRules = (iSpace, moves, isOdd, iPlayer) => {
   return highlights;
 }
 
-const spacesFromSlideRules = (iSpace, rules, iPlayer) => {
+const spacesFromSlideRules = (players, iSpace, rules, iPlayer, isJump) => {
   const sign = iPlayer ? -1 : 1;
-  let spaces = [];
+  let highlights = [];
   rules.forEach(slide => {
-    spaces = spaces.concat(spacesAlongSlide(iSpace, sign, slide));
+    highlights = highlights.concat(spacesAlongSlide(players, iSpace, sign, slide, iPlayer, isJump));
   })
-  return spaces;
+  return highlights;
 }
 
-const spacesFromRowColRules = (iSpace, rules, iPlayer) => {
+const spacesFromRowColRules = (players, iSpace, rules, iPlayer) => {
   const sign = iPlayer ? -1 : 1;
   const { row, col } = indexToRowCol(iSpace);
-  const spaces = [];
+  const highlights = [];
   rules.forEach(rule => {
     const rowRule = row + (rule.row * sign);
     const colRule = col + (rule.col * sign);
+    const iSpaceT = rowColToIndex(rowRule, colRule);
     if (rowRule >= 0 && 
       rowRule < BOARD_ROW_COUNT &&
       colRule >= 0 && 
       colRule < BOARD_COL_COUNT) {
-      spaces.push(rowColToIndex(rowRule, colRule));
+        const tileInfo = isTileOnSpace(players, iSpaceT);
+        
+        if (!tileInfo || tileInfo.iPlayer !== iPlayer) {
+          highlights.push(iSpaceT);
+        } 
     }
   })
-  return spaces;
+  return highlights;
 }
 
-const spacesAlongSlide = (iSpace, sign, slide) => {
-  const spaces = [];
+function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, isJump) {
+  const highlights = [];
   const { row, col } = indexToRowCol(iSpace);
   let rule, 
+    i,
     rowT = row, 
     colT = col;
   switch(slide) {
@@ -133,16 +164,27 @@ const spacesAlongSlide = (iSpace, sign, slide) => {
       window.alert('Illegal SLIDE type ' + slide);
       break;
   }
-  for (let i = 0; i < BOARD_ROW_COUNT; i++) {
+  for (i = 0; i < BOARD_ROW_COUNT; i++) {
     colT += rule.col;
     rowT += rule.row;
-    if (colT >= 0 && colT < BOARD_ROW_COUNT &&
-      rowT >= 0 && rowT < BOARD_ROW_COUNT) {
-        spaces.push(rowColToIndex(rowT, colT));
-      } else {
+    let iSpaceT = rowColToIndex(rowT, colT);
+    if (colT < 0  || colT >= BOARD_ROW_COUNT ||
+      rowT < 0 || rowT >= BOARD_ROW_COUNT) {
         break;
+      } else {
+        const tileInfo = isTileOnSpace(players, iSpaceT);
+        if (!tileInfo) {
+          highlights.push(iSpaceT);
+        } else if (tileInfo.iPlayer !== iPlayer) {
+          highlights.push(iSpaceT);
+          if (!isJump)
+            break;
+        } else {
+          if (!isJump)
+            break;
+        }
       }
   }
-  return spaces;
+  return highlights;
 }
 

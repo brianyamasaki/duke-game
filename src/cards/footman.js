@@ -12,7 +12,7 @@ export const footmanMoves = {
   }, 
   even: {
     move: [
-      { row: -2,col: 0 },
+      { row: -2, col: 0, denyMoveSpaces: [{ row: -1, col: 0 }] },
       { row: -1, col: -1 },
       { row: -1, col: 1 },
       { row: 1, col: -1 },

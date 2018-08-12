@@ -1,5 +1,6 @@
 {
   "private": true,
+  "name": "duke-game",
   "homepage": "http://duke.yamasakidesign.com/",
   "scripts": {
     "deploy": "now && now alias",
