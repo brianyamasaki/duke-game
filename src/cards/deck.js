@@ -52,12 +52,13 @@ const createCard = type => {
 }
 
 const deckContents = [
-  { type: TILE_FOOTMAN, count: 2 },
-  { type: TILE_KNIGHT, count: 2 },
-  { type: TILE_SEER, count: 2 },
-  { type: TILE_PRIEST, count: 2 },
-  { type: TILE_PIKEMAN, count: 2 },
-  { type: TILE_RANGER, count: 2 }
+  { type: TILE_DUKE, count: 1},
+  { type: TILE_FOOTMAN, count: 3 },
+  { type: TILE_KNIGHT, count: 1 },
+  { type: TILE_SEER, count: 1 },
+  { type: TILE_PRIEST, count: 1 },
+  { type: TILE_PIKEMAN, count: 3 },
+  { type: TILE_RANGER, count: 1 }
 ];
 
 export const shuffleDeck = () => {

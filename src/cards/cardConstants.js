@@ -5,6 +5,18 @@ export const TILE_PRIEST = 'priest';
 export const TILE_SEER = 'seer';
 export const TILE_PIKEMAN = 'pikeman';
 export const TILE_RANGER = 'ranger';
+// not yet implemented
+export const TILE_WIZARD = 'wizard';
+export const TILE_GENERAL = 'general';
+export const TILE_CHAMPION = 'champion';
+export const TILE_MARSHALL = 'marshall';
+export const TILE_BOWMAN = 'bowman';
+export const TILE_DRAGOON = 'dragoon';
+export const TILE_ASSASSIN = 'assassin';
+export const TILE_LONGBOWMAN = 'longbowman';
+// Enhanced tiles
+export const TILE_DUCHESS = 'duchess';
+export const TILE_ORACLE = 'oracle';
 export const HIGHLIGHTS_DUKES_FOOTMEN = 'highlights-dukes-footmen';
 
 export const POS_ABOVE = 'POS_ABOVE';
