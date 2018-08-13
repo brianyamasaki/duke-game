@@ -103,7 +103,7 @@ class SidebarUi extends Component {
     const { players } = this.props;
 
     return (
-      <div className='sidebar-ui pull-right text-center'>
+      <div className='sidebar-ui text-center'>
         {players.map(this.renderPlayer)} 
         {this.renderEndOfTurn()}
         {this.renderDebugControl()}
