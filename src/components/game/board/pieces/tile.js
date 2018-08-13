@@ -4,12 +4,16 @@ import './tile.css'
 class Tile extends Component {
 
   render() {
-    if (!this.props.type) {
+    const { type, moves, player } = this.props;
+    if (!type) {
       return null;
     }
     const classes = ['tile'];
-    classes.push(this.props.type);
-    classes.push(this.props.moves % 2 === 1 ? 'frontside' : 'backside');
+    classes.push(type);
+    classes.push(moves % 2 === 1 ? 'frontside' : 'backside');
+    if (player === 1) {
+      classes.push('dark');
+    }
     return <div className={classes.join(' ')} />;
   }
 }

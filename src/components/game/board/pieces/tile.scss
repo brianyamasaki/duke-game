@@ -1,3 +1,23 @@
+@mixin dualBackgroundTile($tile, $tone, $side) {
+  background-image: url('./images/' + $tile + '-' + $side + '.png'), url('./images/' + $tone + '.jpg');
+}
+
+@mixin tileBackground($tile) {
+  @include dualBackgroundTile($tile, light, front);
+  &.dark {
+    transform: rotate(180deg);
+    @include dualBackgroundTile($tile, dark, front);
+  }
+  &.backside {
+    @include dualBackgroundTile($tile, light, back);
+    &.dark {
+      transform: rotate(180deg);
+      @include dualBackgroundTile($tile, dark, back);
+    }
+  }
+
+}
+
 .tile {
   overflow: hidden;
   margin: 5%;
@@ -10,93 +30,49 @@
     background-color: lightgray;
   }
   &.bowman { 
-    background-image: url('./images/bowman-front.png');
-    &.backside {
-      background-image: url('./images/bowman-back.png');
-    }
+    @include tileBackground(bowman);
   }
-  &.champion { 
-    background-image: url('./images/champion-front.png');
-    &.backside {
-      background-image: url('./images/champion-back.png');
-    }
+  &.champion {
+    @include tileBackground(champion);
+
   }
   &.dragoon { 
-    background-image: url('./images/dragoon-front.png');
-    &.backside {
-      background-image: url('./images/dragoon-back.png');
-    }
+    @include tileBackground(dragoon);
   }
-  &.duchess { 
-    background-image: url('./images/duchess-front.png');
-    &.backside {
-      background-image: url('./images/duchess-back.png');
-    }
+  &.duchess {
+    @include tileBackground(duchess);
   }
   &.duke {
-    background-image: url('./images/duke-front.png');
-    &.backside {
-      background-image: url('./images/duke-back.png');
-    }
+    @include tileBackground(duke);
   }
   &.footman { 
-    background-image: url('./images/footman-front.png');
-    &.backside {
-      background-image: url('./images/footman-back.png');
-    }
+    @include tileBackground(footman);
   }
-  &.general { 
-    background-image: url('./images/general-front.png');
-    &.backside {
-      background-image: url('./images/general-back.png');
-    }
+  &.general {
+    @include tileBackground(general);
   }
-  &.knight { 
-    background-image: url('./images/knight-front.png');
-    &.backside {
-      background-image: url('./images/knight-back.png');
-    }
+  &.knight {
+    @include tileBackground(knight);
   }
-  &.marshall { 
-    background-image: url('./images/marshall-front.png');
-    &.backside {
-      background-image: url('./images/marshall-back.png');
-    }
+  &.marshall {
+    @include tileBackground(marshall);
   }
-  &.oracle { 
-    background-image: url('./images/oracle-front.png');
-    &.backside {
-      background-image: url('./images/oracle-back.png');
-    }
+  &.oracle {
+    @include tileBackground(oracle);
   }
   &.pikeman { 
-    background-image: url('./images/pikeman-front.png');
-    &.backside {
-      background-image: url('./images/pikeman-back.png');
-    }
+    @include tileBackground(pikeman);
   }
-  &.priest { 
-    background-image: url('./images/priest-front.png');
-    &.backside {
-      background-image: url('./images/priest-back.png');
-    }
+  &.priest {
+    @include tileBackground(priest);
   }
   &.ranger { 
-    background-image: url('./images/ranger-front.png');
-    &.backside {
-      background-image: url('./images/ranger-back.png');
-    }
+    @include tileBackground(ranger);
   }
-  &.seer { 
-    background-image: url('./images/seer-front.png');
-    &.backside {
-      background-image: url('./images/seer-back.png');
-    }
+  &.seer {
+    @include tileBackground(seer);
   }
   &.wizard { 
-    background-image: url('./images/wizard-front.png');
-    &.backside {
-      background-image: url('./images/wizard-back.png');
-    }
+    @include tileBackground(wizard);
   }
 }

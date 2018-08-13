@@ -3,7 +3,13 @@ import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
 
 import packageJson from '../../../../package.json';
-import { GAME_SELECT_OR_DRAW, setDebugMode, selectTileInBag } from '../../../modules/boardState';
+import { 
+  GAME_SELECT_OR_DRAW, 
+  setDebugMode, 
+  selectTileInBag,
+  swapPlayers
+} from '../../../modules/boardState';
+
 import { 
   TILE_KNIGHT,
   TILE_FOOTMAN,
@@ -58,6 +64,13 @@ class SidebarUi extends Component {
     );
   }
 
+  renderEndOfTurn = () => {
+    const { gameState, swapPlayers } = this.props;
+
+    if (gameState === GAME_SELECT_OR_DRAW)
+      return <Button bsStyle='default' onClick={swapPlayers}>End of Turn</Button>
+  }
+
   renderHint = (i) => {
     if (this.props.currentPlayer === i) {
       return (
@@ -92,6 +105,7 @@ class SidebarUi extends Component {
     return (
       <div className='sidebar-ui pull-right text-center'>
         {players.map(this.renderPlayer)} 
+        {this.renderEndOfTurn()}
         {this.renderDebugControl()}
         <p>Version {packageJson.version}</p>
       </div>
@@ -120,5 +134,6 @@ const mapStateToProps = ({ boardState }) => {
 
 export default connect(mapStateToProps, {
   setDebugMode,
-  selectTileInBag
+  selectTileInBag,
+  swapPlayers
 })(SidebarUi);

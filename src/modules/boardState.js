@@ -29,6 +29,7 @@ export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
 export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
 export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
+export const GAME_SWAP_PLAYERS = 'GAME_SWAP_PLAYERS';
 export const GAME_DEBUG_MODE = 'GAME_DEBUG_MODE';
 
 export const PLAYERS_INIT = 'PLAYERS_INIT';
@@ -144,6 +145,11 @@ export default (state = initialState, action) => {
           return playerClone;
         })
       }
+    case GAME_SWAP_PLAYERS:
+      return {
+        ...state,
+        currentPlayer: state.currentPlayer ? 0 : 1
+      };
     case GAME_DEBUG_MODE:
       return {
         ...state,
@@ -326,6 +332,12 @@ export const selectTileInBag = (type) => {
     type: GAME_SELECT_TILE_IN_BAG,
     payload: type
   }
+}
+
+export const swapPlayers = () => {
+  return {
+    type: GAME_SWAP_PLAYERS
+  };
 }
 
 // state machine for clicking on tiles

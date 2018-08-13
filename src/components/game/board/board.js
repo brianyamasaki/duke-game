@@ -36,9 +36,18 @@ class Board extends Component {
       height: `${Math.floor(this.state.height)}px`,
       padding: `${Math.floor(this.state.width / 8)}px`
     };
+
+    const classes = [
+      'board'
+    ];
+
+    if (this.props.currentPlayer !== 0) {
+      classes.push('playerOther');
+    }
+    
     return (
       <div 
-        className="board" 
+        className={classes.join(' ')} 
         ref={this.refCallback} 
         style={style}>
         <SpacesOnBoard boardWidth={this.state.width}/>
@@ -47,4 +56,10 @@ class Board extends Component {
   }
 }
 
-export default connect(null)(Board);
+const mapStateToProps = state => {
+  return {
+    currentPlayer: state.boardState.currentPlayer
+  }
+}
+
+export default connect(mapStateToProps)(Board);
