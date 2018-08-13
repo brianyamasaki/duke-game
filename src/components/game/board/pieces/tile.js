@@ -5,7 +5,7 @@ class Tile extends Component {
 
   render() {
     if (!this.props.type) {
-      return;
+      return null;
     }
     const classes = ['tile'];
     classes.push(this.props.type);

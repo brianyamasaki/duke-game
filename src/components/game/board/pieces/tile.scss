@@ -1,101 +1,102 @@
 .tile {
-  min-height: 100px;
   overflow: hidden;
-  margin: 4px;
+  margin: 5%;
   background-position: top left;
   background-repeat: no-repeat;
-  background-size: 200%;
-  &.backside {
-    background-position: top right;
+  background-size: 100%;
+  background-color: whitesmoke;
+  height: 90%;
+  &.dark {
+    background-color: lightgray;
   }
   &.bowman { 
-    background-image: url('./images/Bowman.png');
-    &.dark {
-      transform: rotate(180deg);
-      background-image: url('./images/DarkBowman.png');
+    background-image: url('./images/bowman-front.png');
+    &.backside {
+      background-image: url('./images/bowman-back.png');
     }
   }
   &.champion { 
-    background-image: url('./images/Champion.png');
-    &.dark {
-      background-image: url('./images/DarkChampion.png');
+    background-image: url('./images/champion-front.png');
+    &.backside {
+      background-image: url('./images/champion-back.png');
     }
   }
   &.dragoon { 
-    background-image: url('./images/Dragoon.png');
-    &.dark {
-      background-image: url('./images/DarkDragoon.png');
+    background-image: url('./images/dragoon-front.png');
+    &.backside {
+      background-image: url('./images/dragoon-back.png');
     }
   }
   &.duchess { 
-    background-image: url('./images/Duchess.png');
-    &.dark {
-      background-image: url('./images/DarkDuchess.png');
+    background-image: url('./images/duchess-front.png');
+    &.backside {
+      background-image: url('./images/duchess-back.png');
     }
   }
   &.duke {
-    background-image: url('./images/Duke.png');
-    &.dark {
-      background-image: url('./images/DarkDuke.png');
+    background-image: url('./images/duke-front.png');
+    &.backside {
+      background-image: url('./images/duke-back.png');
     }
   }
   &.footman { 
-    background-image: url('./images/Footman.png');
-    &.dark {
-      background-image: url('./images/DarkFootman.png');
+    background-image: url('./images/footman-front.png');
+    &.backside {
+      background-image: url('./images/footman-back.png');
     }
   }
   &.general { 
-    background-image: url('./images/General.png');
-    &.dark {
-      background-image: url('./images/DarkGeneral.png');
+    background-image: url('./images/general-front.png');
+    &.backside {
+      background-image: url('./images/general-back.png');
     }
   }
   &.knight { 
-    background-image: url('./images/Knight.png');
-    &.dark {
-      background-image: url('./images/DarkKnight.png');
+    background-image: url('./images/knight-front.png');
+    &.backside {
+      background-image: url('./images/knight-back.png');
     }
   }
   &.marshall { 
-    background-image: url('./images/Marshall.png');
-    &.dark {
-      background-image: url('./images/DarkMarshall.png');
+    background-image: url('./images/marshall-front.png');
+    &.backside {
+      background-image: url('./images/marshall-back.png');
     }
   }
   &.oracle { 
-    background-image: url('./images/Oracle.png');
-    &.dark {
-      background-image: url('./images/DarkOracle.png');
+    background-image: url('./images/oracle-front.png');
+    &.backside {
+      background-image: url('./images/oracle-back.png');
     }
   }
   &.pikeman { 
-    background-image: url('./images/Pikeman.png');
-    &.dark {
-      background-image: url('./images/DarkPikeman.png');
+    background-image: url('./images/pikeman-front.png');
+    &.backside {
+      background-image: url('./images/pikeman-back.png');
     }
   }
   &.priest { 
-    background-image: url('./images/Priest.png');
-    &.dark {
-      background-image: url('./images/DarkPriest.png');
+    background-image: url('./images/priest-front.png');
+    &.backside {
+      background-image: url('./images/priest-back.png');
     }
   }
   &.ranger { 
-    background-image: url('./images/Ranger.png');
-    &.dark {
-      background-image: url('./images/DarkRanger.png');
+    background-image: url('./images/ranger-front.png');
+    &.backside {
+      background-image: url('./images/ranger-back.png');
     }
   }
   &.seer { 
-    background-image: url('./images/Seer.png');
-    &.dark {
-      background-image: url('./images/DarkSeer.png');
+    background-image: url('./images/seer-front.png');
+    &.backside {
+      background-image: url('./images/seer-back.png');
     }
   }
   &.wizard { 
-    background-image: url('./images/Wizard.png');    &.dark {
-      background-image: url('./images/DarkWizard.png');
+    background-image: url('./images/wizard-front.png');
+    &.backside {
+      background-image: url('./images/wizard-back.png');
     }
   }
 }
