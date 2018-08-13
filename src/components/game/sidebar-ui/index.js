@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
+
+import packageJson from '../../../../package.json';
 import { GAME_SELECT_OR_DRAW, setDebugMode, selectTileInBag } from '../../../modules/boardState';
 import { 
   TILE_KNIGHT,
@@ -91,6 +93,7 @@ class SidebarUi extends Component {
       <div className='sidebar-ui pull-right text-center'>
         {players.map(this.renderPlayer)} 
         {this.renderDebugControl()}
+        <p>Version {packageJson.version}</p>
       </div>
     );
   }
