@@ -12,7 +12,7 @@ const Home = props => (
           but with more aggressive pieces. And with every other move, each tile flips over
           and gives you different moves. This means you have to think at least one move ahead. </p>
         <p>Here's a fantastic YouTube video describing how to Play the Duke</p>
-        <iframe title="WatchItPlayed" width="560" height="315" src="https://www.youtube.com/embed/msWtSzLxcaE?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <iframe title="WatchItPlayed" width="560" height="315" src="https://www.youtube.com/embed/msWtSzLxcaE?rel=0" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></iframe>
         <p>The <a href="https://www.catalystgamelabs.com/download/The%20Duke%20Rulebook%20Hi-Res_FINAL.pdf">rules for the Duke </a> 
         are available for download so we won't try to explain the game. 
         There's a very good <a href="https://www.catalystgamelabs.com/duke/" target='_blank' rel="noopener noreferrer">introduction to the Duke</a> as well. </p>

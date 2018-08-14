@@ -40,26 +40,57 @@ class SidebarUi extends Component {
     }
   }
 
+  renderDebugTileDrawButton = (iPlayer, type, btnText) => {
+    const { players, selectTileInBag } = this.props;
+    if (players[iPlayer].tilesInBag.find(tileInfo => tileInfo.type === type))
+      return <Button bsStyle='primary' onClick={()=> selectTileInBag(type)}>{btnText}</Button>
+  }
+
   renderDrawTileButton = (i) => {
-    const { currentPlayer, gameState, selectTileInBag, gameDebugMode } = this.props;
+    const { currentPlayer, gameState, gameDebugMode, selectTileInBag } = this.props;
 
     if (currentPlayer !== i || gameState !== GAME_SELECT_OR_DRAW)
       return;
     if (!gameDebugMode) {
       return (
         <div>
-          <Button bsStyle='primary' onClick={() => window.alert('Not Implemented')}>Draw a Tile</Button>
+          <Button bsStyle='primary' onClick={() => selectTileInBag()}>Draw a Tile</Button>
         </div>
       )
     }
+    const tileTypes = [
+      { 
+        type: TILE_KNIGHT,
+        text: 'Draw Knight'
+      },
+      {
+        type: TILE_SEER,
+        text: 'Draw Seer'
+      },
+      {
+        type: TILE_PRIEST,
+        text: 'Draw Priest'
+      },
+      { 
+        type: TILE_FOOTMAN,
+        text: 'Draw Footman'
+      },
+      {
+        type: TILE_RANGER,
+        text: 'Draw Ranger'
+      },
+      {
+        type: TILE_PIKEMAN,
+        text: 'Draw Pikeman'
+      }
+    ];
     return (
       <div>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_KNIGHT)}>Draw Knight</Button>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_SEER)}>Draw Seer</Button>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_PRIEST)}>Draw Priest</Button>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_FOOTMAN)}>Draw Footman</Button>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_RANGER)}>Draw Ranger</Button>
-        <Button bsStyle='primary' onClick={()=> selectTileInBag(TILE_PIKEMAN)}>Draw Pikeman</Button>
+        {tileTypes.map(tileType => this.renderDebugTileDrawButton(
+          currentPlayer,
+          tileType.type,
+          tileType.text
+        ))}
       </div>
     );
   }

@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
 import { BOARD_SPACE_DIVISOR, HIGHLIGHT_STRIKE } from '../../../../constants';
-import { spacesInit, spaceClicked, GAME_SELECT_OR_DRAW, playersInit, cancelSelection } from '../../../../modules/boardState';
+import { 
+  spacesInit, 
+  spaceClicked, 
+  GAME_SELECT_OR_DRAW, 
+  playersInit, 
+  cancelSelection,
+  otherPlayerPlaceDuke,
+} from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 import StrikeIcon from '../../../../icons/strike-icon';
 
@@ -19,8 +26,17 @@ class SpacesOnBoard extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.boardWidth !== this.props.boardWidth) {
-      this.setState({ boardWidth: this.props.boardWidth });
+    const { boardWidth, boardState, otherPlayerPlaceDuke } = this.props;
+    if (prevProps.boardWidth !== boardWidth) {
+      this.setState({ boardWidth });
+    }
+    // check if the other player has a Duke in his bag, if so, swap players
+    if (prevProps.boardState.gameState !== boardState &&
+    boardState.gameState === GAME_SELECT_OR_DRAW) {
+      const otherPlayerIndex = boardState.currentPlayer ? 0 : 1;
+      if (boardState.players[otherPlayerIndex].tilesInBag.find(tileInfo => tileInfo.type === 'duke')) {
+        otherPlayerPlaceDuke();
+      }
     }
   }
 
@@ -106,5 +122,6 @@ export default connect(mapStateToProps, {
   spacesInit,
   spaceClicked,
   playersInit,
-  cancelSelection
+  cancelSelection,
+  otherPlayerPlaceDuke
 })(SpacesOnBoard);

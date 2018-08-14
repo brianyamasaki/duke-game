@@ -25,6 +25,7 @@ export const GAME_CHOOSE_DUKE_POSITION = 'GAME_CHOOSE_DUKE_POSITION';
 export const GAME_DUKE_PLACED = 'GAME_DUKE_PLACED';
 export const GAME_CHOOSE_FOOTMAN1_POSITION = 'GAME_CHOOSE_FOOTMAN1_POSITION';
 export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
+export const GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION = 'GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
 export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
@@ -118,12 +119,28 @@ const debugHighlights = () => {
   }
   return highlights;
 }
+
 export const setDebugMode = (mode) => {
   return {
     type: GAME_DEBUG_MODE,
     payload: mode
   };
 }
+
+// place tile from bag onto the board
+const placeTileFromBagOnBoard = (player, iPlayer, tileType, iSpace) => {
+  if (tileType) {
+    const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === tileType);
+    if (tileIndex !== -1) {
+      const tiles = player.tilesInBag.splice(tileIndex, 1);
+      tiles[0].iSpace = iSpace;
+      tiles[0].moves = 1;
+      tiles[0].iPlayer = iPlayer;
+      player.tilesOnBoard = player.tilesOnBoard.concat(tiles);
+    }
+  } 
+}
+
 export default (state = initialState, action) => {
   let playersClone;
   switch (action.type) {
@@ -159,12 +176,10 @@ export default (state = initialState, action) => {
       playersClone = cloneAndModifyPlayer(
         state.players, 
         state.currentPlayer, 
-        (player) => player.tilesOnBoard.push({
-          type: TILE_DUKE,
-          iSpace: action.payload.iSpace,
-          moves: 1,
-          iPlayer: state.currentPlayer
-         })
+        (player) => placeTileFromBagOnBoard(
+          player, 
+          state.currentPlayer, 
+          TILE_DUKE, action.payload.iSpace)
       );
       return {
         ...state,
@@ -194,12 +209,11 @@ export default (state = initialState, action) => {
         players: cloneAndModifyPlayer(
           state.players, 
           state.currentPlayer, 
-          (player) => player.tilesOnBoard.push({
-            type: TILE_FOOTMAN,
-            iSpace: action.payload.iSpace,
-            moves: 1,
-            iPlayer: state.currentPlayer
-           })
+          (player) => placeTileFromBagOnBoard(
+            player, 
+            state.currentPlayer, 
+            TILE_FOOTMAN, 
+            action.payload.iSpace)
         )
       };
     case GAME_CHOOSE_FOOTMAN2_POSITION:
@@ -211,13 +225,19 @@ export default (state = initialState, action) => {
         players: cloneAndModifyPlayer(
           state.players, 
           state.currentPlayer, 
-          (player) => player.tilesOnBoard.push({
-            type: TILE_FOOTMAN,
-            iSpace: action.payload.iSpace,
-            moves: 1,
-            iPlayer: state.currentPlayer
-           })
+          (player) => placeTileFromBagOnBoard(
+            player, 
+            state.currentPlayer, 
+            TILE_FOOTMAN, 
+            action.payload.iSpace)
         )
+      };
+    case GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION:
+      return {
+        ...state,
+        currentPlayer: state.currentPlayer ? 0 : 1,
+        highlighted: dukePlacement(1),
+        gameState: GAME_CHOOSE_DUKE_POSITION
       };
     case GAME_SELECT_OR_DRAW:
       return {
@@ -265,15 +285,7 @@ export default (state = initialState, action) => {
                 tileSelected.iPlayer = state.currentPlayer;
               }
             } else {
-              // place tile from bag onto the board
-              const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === state.selectedTile.tileType);
-              if (tileIndex !== -1) {
-                const tiles = player.tilesInBag.splice(tileIndex, 1);
-                tiles[0].iSpace = action.payload.iSpace;
-                tiles[0].moves = 1;
-                tiles[0].iPlayer = state.currentPlayer;
-                player.tilesOnBoard = player.tilesOnBoard.concat(tiles);
-              }
+              placeTileFromBagOnBoard(player, state.currentPlayer, state.selectedTile.tileType, action.payload.iSpace);
             }
           }
         ),
@@ -290,18 +302,23 @@ export default (state = initialState, action) => {
           false,
           state.currentPlayer
         );
+        let tileType = action.payload ? action.payload : randomTileFromBag(state.players[state.currentPlayer]) ;
       return {
         ...state,
         gameState: GAME_TILE_MOVE,
         selectedTile: {
           selectionType: SELECTED_TILE_IN_BAG,
-          tileType: action.payload
+          tileType
         },
         highlighted
       }
     default:
       return state
   }
+}
+
+const randomTileFromBag = (player) => {
+  return player.tilesInBag[0].type;
 }
 
 // initialize the spaces array
@@ -338,6 +355,12 @@ export const swapPlayers = () => {
   return {
     type: GAME_SWAP_PLAYERS
   };
+}
+
+export const otherPlayerPlaceDuke = () => {
+  return {
+    type: GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION
+  }
 }
 
 // state machine for clicking on tiles
