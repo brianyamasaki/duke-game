@@ -245,6 +245,7 @@ export default (state = initialState, action) => {
         gameState: GAME_SELECT_OR_DRAW,
         highlighted: [],
         selected: [],
+        selectedTile: selectedTileDft,
         uiHint: HINT_SELECT_OR_DRAW
       };
     case GAME_TILE_SELECTED:

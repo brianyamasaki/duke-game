@@ -5,7 +5,15 @@
     &:hover {
       background-color: rgba(255, 255, 0, 0.6)
     }
+    &.capture {
+      background-color: rgba(255, 0, 0, 0.3);
+      border: 1px solid rgba(255, 0, 0, 1);
+      &:hover {
+        background-color: rgba(255, 0, 0, 0.6)
+      }  
+    }
   }
+  
   &.selected {
     background-color: rgba(0, 0, 255, 0.3);
     border: 1px solid rgba(0, 0, 255, 1);

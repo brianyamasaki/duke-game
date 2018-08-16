@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
-import { BOARD_SPACE_DIVISOR, HIGHLIGHT_STRIKE } from '../../../../constants';
+import { BOARD_SPACE_DIVISOR, HIGHLIGHT_STRIKE, HIGHLIGHT_CAPTURE } from '../../../../constants';
 import { 
   spacesInit, 
   spaceClicked, 
@@ -12,6 +12,7 @@ import {
 } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 import StrikeIcon from '../../../../icons/strike-icon';
+import CaptureIcon from '../../../../icons/capture-icon';
 
 import './index.css';
 
@@ -57,6 +58,8 @@ class SpacesOnBoard extends Component {
     switch (highlight.type) {
       case HIGHLIGHT_STRIKE:
         return <StrikeIcon />;
+      // case HIGHLIGHT_CAPTURE:
+      //   return <CaptureIcon />;
       default: 
         return;
     }
@@ -75,6 +78,9 @@ class SpacesOnBoard extends Component {
     const classes = ['space'];
     if (highlight) {
       classes.push('highlight');
+      if (highlight.type === HIGHLIGHT_CAPTURE) {
+        classes.push('capture');
+      }
     }
     if (isSelected) {
       classes.push('selected');

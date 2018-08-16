@@ -22,9 +22,10 @@ import {
   HIGHLIGHT_MOVE,
   HIGHLIGHT_JUMP,
   HIGHLIGHT_SLIDE,
-  HIGHLIGHT_COMMAND,
+  // HIGHLIGHT_COMMAND,
   HIGHLIGHT_STRIKE,
-  HIGHLIGHT_JUMPSLIDE
+  HIGHLIGHT_JUMPSLIDE,
+  HIGHLIGHT_CAPTURE
 } from '../constants';
 import { rowColToIndex, indexToRowCol } from '../shared';
 import { dukeMoves, dukeFootmen } from './duke';
@@ -106,13 +107,8 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
             iSpace, 
             ruleSet[key], 
             iPlayer,
-            key === 'jump'
-          ).map(space => {
-              return {
-                iSpace: space,
-                type: highlightTypes[key]
-              };
-            })
+            key
+          )
         );
         break;
       case 'slide':
@@ -123,13 +119,8 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
             iSpace, 
             ruleSet[key], 
             iPlayer, 
-            key === 'jumpSlide'
-          ).map(space => {
-            return {
-              iSpace: space,
-              type: highlightTypes[key]
-            }
-          })
+            key
+          )
         );
         break;
       case 'type':
@@ -143,16 +134,16 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
   return highlights;
 }
 
-const spacesFromSlideRules = (players, iSpace, rules, iPlayer, isJump) => {
+const spacesFromSlideRules = (players, iSpace, rules, iPlayer, ruleType) => {
   const sign = iPlayer ? -1 : 1;
   let highlights = [];
   rules.forEach(slide => {
-    highlights = highlights.concat(spacesAlongSlide(players, iSpace, sign, slide, iPlayer, isJump));
+    highlights = highlights.concat(spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType));
   })
   return highlights;
 }
 
-const spacesFromRowColRules = (players, iSpace, rules, iPlayer) => {
+const spacesFromRowColRules = (players, iSpace, rules, iPlayer, ruleType) => {
   const sign = iPlayer ? -1 : 1;
   const { row, col } = indexToRowCol(iSpace);
   const highlights = [];
@@ -166,15 +157,23 @@ const spacesFromRowColRules = (players, iSpace, rules, iPlayer) => {
       colRule < BOARD_COL_COUNT) {
         const tileInfo = isTileOnSpace(players, iSpaceT);
         
-        if (!tileInfo || tileInfo.iPlayer !== iPlayer) {
-          highlights.push(iSpaceT);
-        } 
+        if (!tileInfo) {
+          highlights.push({
+            iSpace: iSpaceT,
+            type: highlightTypes[ruleType]
+          });
+        } else if (tileInfo.player !== iPlayer) {
+          highlights.push({
+            iSpace: iSpaceT,
+            type: HIGHLIGHT_CAPTURE
+          });
+        }
     }
   })
   return highlights;
 }
 
-function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, isJump) {
+function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
   const highlights = [];
   const { row, col } = indexToRowCol(iSpace);
   let rule, 
@@ -220,13 +219,19 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, isJump) {
       } else {
         const tileInfo = isTileOnSpace(players, iSpaceT);
         if (!tileInfo) {
-          highlights.push(iSpaceT);
+          highlights.push({
+            iSpace: iSpaceT,
+            type: highlightTypes[ruleType]
+          });
         } else if (tileInfo.iPlayer !== iPlayer) {
-          highlights.push(iSpaceT);
-          if (!isJump)
+          highlights.push({
+            iSpace: iSpaceT,
+            type: HIGHLIGHT_CAPTURE
+          });
+          if (ruleType !== 'jumpSlide')
             break;
         } else {
-          if (!isJump)
+          if (ruleType !== 'jumpSlide')
             break;
         }
       }

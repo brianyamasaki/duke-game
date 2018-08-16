@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
+import Tile from '../../game/board/pieces/tile';
 
 import packageJson from '../../../../package.json';
 import { 
@@ -24,7 +25,8 @@ import './index.css';
 class SidebarUi extends Component {
   state = {
     uiHint: '',
-    gameDebugMode: false
+    gameDebugMode: false,
+    selectedTile: {}
   };
 
   componentDidMount() {
@@ -32,12 +34,33 @@ class SidebarUi extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.gameState !== this.props.gameState) {
-      this.setState({ uiHint: this.props.uiHint});
+    const { gameState, gameDebugMode, selectedTile, uiHint } = this.props;
+    if (prevProps.gameState !== gameState) {
+      this.setState({ uiHint });
     }
-    if (prevProps.gameDebugMode !== this.props.gameDebugMode) {
-      this.setState({ gameDebugMode: this.props.gameDebugMode});
+    if (prevProps.gameDebugMode !== gameDebugMode) {
+      this.setState({ gameDebugMode });
     }
+    if (prevProps.selectedTile !== selectedTile) {
+      this.setState({ selectedTile });
+    }
+  }
+
+  renderSelectedTileInfo(iPlayer) {
+    const { selectedTile, currentPlayer } = this.props;
+    if (iPlayer !== currentPlayer || !selectedTile.tileType) {
+      return;
+    }
+    return (
+      <Row>
+        <Col md={6} style={{height: 100}}>
+          <Tile type={selectedTile.tileType} player={currentPlayer} moves={1}/>
+        </Col>
+        <Col md={6} style={{height: 100}}>
+          <Tile type={selectedTile.tileType} player={currentPlayer} moves={2}/>
+        </Col>
+      </Row>
+    );
   }
 
   renderDebugTileDrawButton = (iPlayer, type, btnText) => {
@@ -150,14 +173,16 @@ const mapStateToProps = ({ boardState }) => {
     players,
     currentPlayer,
     uiHint,
-    gameDebugMode 
+    gameDebugMode,
+    selectedTile
   } = boardState;
   return {
     gameState,
     players,
     currentPlayer,
     uiHint,
-    gameDebugMode
+    gameDebugMode,
+    selectedTile
   };
 }
 
