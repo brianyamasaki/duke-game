@@ -162,7 +162,7 @@ const spacesFromRowColRules = (players, iSpace, rules, iPlayer, ruleType) => {
             iSpace: iSpaceT,
             type: highlightTypes[ruleType]
           });
-        } else if (tileInfo.player !== iPlayer) {
+        } else if (tileInfo.iPlayer !== iPlayer) {
           highlights.push({
             iSpace: iSpaceT,
             type: HIGHLIGHT_CAPTURE
