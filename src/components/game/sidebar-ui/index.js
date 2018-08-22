@@ -63,6 +63,19 @@ class SidebarUi extends Component {
     );
   }
 
+  renderCapturedTiles = (player, iPlayer) => {
+    if (player.tilesCaptured.length === 0) return;
+
+    return (
+      <div className='capturedTiles text-left'>
+        <h5>Captured tiles</h5>
+        <ul>
+          {player.tilesCaptured.map((tileInfo,i) => (<li key={i} className='smallFont'>{tileInfo.type}</li>))}
+        </ul>
+      </div>
+    );
+  }
+
   renderDebugTileDrawButton = (iPlayer, type, btnText) => {
     const { players, selectTileInBag } = this.props;
     if (players[iPlayer].tilesInBag.find(tileInfo => tileInfo.type === type))
@@ -135,10 +148,11 @@ class SidebarUi extends Component {
 
   renderPlayer = (player, i) => {
     return (
-      <div key={i}>
+      <div key={i} className='playerDiv'>
         <h4 className='text-center'>{player.name}</h4>
         {this.renderHint(i)}
         {this.renderDrawTileButton(i)}
+        {this.renderCapturedTiles(player, i)}
       </div>
     );
   }
@@ -161,7 +175,7 @@ class SidebarUi extends Component {
         {players.map(this.renderPlayer)} 
         {this.renderEndOfTurn()}
         {this.renderDebugControl()}
-        <p>Version {packageJson.version}</p>
+        <p className='smallFont'>Version {packageJson.version}</p>
       </div>
     );
   }

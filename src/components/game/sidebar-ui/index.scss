@@ -1,4 +1,10 @@
 .sidebar-ui {
   border: solid black 1px;
   padding: 0 8px;
+  .playerDiv {
+    min-height: 80px;
+  }
+  .smallFont {
+    font-size: 10px;
+  }
 }

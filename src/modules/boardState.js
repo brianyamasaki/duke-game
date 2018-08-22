@@ -2,7 +2,8 @@ import {
   BOARD_ROW_COUNT, 
   BOARD_COL_COUNT,
   HIGHLIGHT_MOVE,
-  HIGHLIGHT_STRIKE
+  HIGHLIGHT_STRIKE,
+  HIGHLIGHT_CAPTURE
 } from '../constants';
 import { 
   shuffleDeck,
@@ -38,7 +39,8 @@ export const PLAYERS_INIT = 'PLAYERS_INIT';
 const playerDft = {
   name: '',
   tilesInBag: [],
-  tilesOnBoard: []
+  tilesOnBoard: [],
+  tilesCaptured: []
 };
 
 const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
@@ -279,7 +281,17 @@ export default (state = initialState, action) => {
               // move tile currently on the board
               const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
               if (tileSelected) {
+                if (action.payload.highlightType === HIGHLIGHT_CAPTURE) {
+                  // remove captured tile off of board
+                  const playerOther = state.players[state.currentPlayer ? 0 : 1];
+                  const tileToCaptureIndex = playerOther.tilesOnBoard.findIndex((tileInfo) => tileInfo.iSpace === action.payload.iSpace);
+                  if (tileToCaptureIndex !== -1) {
+                    playerOther.tilesCaptured.push(playerOther.tilesOnBoard[tileToCaptureIndex]);
+                    playerOther.tilesOnBoard.splice(tileToCaptureIndex, 1);
+                  }
+                }
                 if (action.payload.highlightType !== HIGHLIGHT_STRIKE) {
+                  // actually move the selected tile
                   tileSelected.iSpace = action.payload.iSpace;
                 }
                 tileSelected.moves += 1;
