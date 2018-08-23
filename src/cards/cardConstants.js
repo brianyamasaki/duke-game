@@ -31,3 +31,10 @@ export const SLIDE_DIAG_UP_LEFT = 'SLIDE_DIAG_UP_LEFT';
 export const SLIDE_DIAG_UP_RIGHT = 'SLIDE_DIAG_UP_RIGHT';
 export const SLIDE_DIAG_DOWN_LEFT = 'SLIDE_DIAG_DOWN_LEFT';
 export const SLIDE_DIAG_DOWN_RIGHT = 'SLIDE_DIAG_DOWN_RIGHT';
+
+export const RULETYPE_MOVE = 'move';
+export const RULETYPE_JUMP = 'jump';
+export const RULETYPE_SLIDE = 'slide';
+export const RULETYPE_JUMPSLIDE = 'jumpslide';
+export const RULETYPE_STRIKE = 'strike';
+export const DENYMOVESPACES = 'denyMoveSpaces';

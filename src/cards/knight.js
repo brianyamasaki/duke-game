@@ -7,7 +7,7 @@ export const knightMoves = {
       { row: 0, col: -1 },
       { row: 0, col: 1 },
       { row: 1, col: 0 },
-      { row: 2, col: 0 }
+      { row: 2, col: 0, denyMoveSpaces: [{ row: 1, col: 0 }] }
     ],
     jump: [
       { row: -2, col: -1 },
@@ -18,8 +18,8 @@ export const knightMoves = {
     move: [
       { row: 1, col: -1 },
       { row: 1, col: 1 },
-      { row: 2, col: -2 },
-      { row: 2, col: 2 }
+      { row: 2, col: -2, denyMoveSpaces: [{ row: 1, col: -1 }] },
+      { row: 2, col: 2, denyMoveSpaces: [{ row: 1, col: 1 }] }
     ],
     slide: [
       SLIDE_UP
