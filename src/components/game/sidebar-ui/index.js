@@ -53,11 +53,11 @@ class SidebarUi extends Component {
     }
     return (
       <Row>
-        <Col md={6} style={{height: 100}}>
-          <Tile type={selectedTile.tileType} player={currentPlayer} moves={1}/>
+        <Col md={6} >
+          <Tile isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={1} />
         </Col>
-        <Col md={6} style={{height: 100}}>
-          <Tile type={selectedTile.tileType} player={currentPlayer} moves={2}/>
+        <Col md={6} >
+          <Tile isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={2}/>
         </Col>
       </Row>
     );
@@ -152,6 +152,7 @@ class SidebarUi extends Component {
         <h4 className='text-center'>{player.name}</h4>
         {this.renderHint(i)}
         {this.renderDrawTileButton(i)}
+        {this.renderSelectedTileInfo(i)}
         {this.renderCapturedTiles(player, i)}
       </div>
     );

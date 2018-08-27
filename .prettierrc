@@ -1,5 +1,8 @@
 {
+  "printWidth": 120,
+  "parser": "flow",
   "singleQuote": true,
   "semi": false,
-  "jsxBracketSameLine": true
+  "bracketSpacing": true,
+  "jsxBracketSameLine": false
 }

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Tile from './tile';
-import { BOARD_SPACE_DIVISOR, HIGHLIGHT_STRIKE, HIGHLIGHT_CAPTURE } from '../../../../constants';
+import { 
+  BOARD_SPACE_DIVISOR, 
+  HIGHLIGHT_STRIKE, 
+  HIGHLIGHT_CAPTURE 
+} from '../../../../constants';
 import { 
   spacesInit, 
   spaceClicked, 

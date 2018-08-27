@@ -1,14 +1,18 @@
 import { createSelector } from 'reselect';
 import { PLAYER_ONE_WINS, PLAYER_ZERO_WINS } from '../../constants';
+import { GAME_SELECT_OR_DRAW } from '../../modules/boardState';
 
 const players = (state) => state.boardState.players;
-const currentPlayer = (state) => state.boardState.currentPlayer;
+const gameState = (state) => state.boardState.gameState;
 
 export const isDukeCaptured = createSelector(
   players,
-  currentPlayer,
-  (players, currentPlayer) => {
-    hasDuke = [];
+  gameState,
+  (players, gameState) => {
+    if (gameState !== GAME_SELECT_OR_DRAW) {
+      return;
+    }
+    const hasDuke = [];
     players.forEach((player, iPlayer) => {
       const tileInfo = player.tilesOnBoard.find(tileInfo => (
         tileInfo.type === 'duke'

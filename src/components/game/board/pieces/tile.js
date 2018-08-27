@@ -8,7 +8,12 @@ class Tile extends Component {
     if (!type) {
       return null;
     }
-    const classes = ['tile'];
+    const classes = [];
+    if (this.props.isPreview) {
+      classes.push('tilePreview')
+    } else {
+      classes.push('tile')
+    }
     classes.push(type);
     classes.push(moves % 2 === 1 ? 'frontside' : 'backside');
     if (player === 1) {

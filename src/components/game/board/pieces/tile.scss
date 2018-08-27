@@ -2,21 +2,26 @@
   background-image: url('./images/' + $tile + '-' + $side + '.png'), url('./images/' + $tone + '.jpg');
 }
 
-@mixin tileBackground($tile) {
+@mixin tileBackground($tile, $useRotation) {
   @include dualBackgroundTile($tile, light, front);
   &.dark {
-    transform: rotate(180deg);
+    @if $useRotation == true {
+      transform: rotate(180deg);
+    }
     @include dualBackgroundTile($tile, dark, front);
   }
   &.backside {
     @include dualBackgroundTile($tile, light, back);
     &.dark {
-      transform: rotate(180deg);
-      @include dualBackgroundTile($tile, dark, back);
+      @if $useRotation == true {
+        transform: rotate(180deg);
+      }
+        @include dualBackgroundTile($tile, dark, back);
     }
   }
-
 }
+
+$tileTypes: bowman champion dragoon duchess duke footman general knight marshall oracle pikeman priest ranger seer wizard;
 
 .tile {
   overflow: hidden;
@@ -25,53 +30,33 @@
   background-repeat: no-repeat;
   background-size: 100%;
   height: 90%;
+  background-color: white;
   &.dark {
     background-color: lightgray;
   }
-  &.bowman { 
-    @include tileBackground(bowman);
+  @each $type in $tileTypes {
+    &.#{$type} {
+      @include tileBackground($type, true);
+    }
   }
-  &.champion {
-    @include tileBackground(champion);
+}
 
+.tilePreview {
+  overflow: hidden;
+  margin: 5%;
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  height: 90%;
+
+  @each $type in $tileTypes {
+    &.#{$type} {
+      @include tileBackground($type, false);
+    }
   }
-  &.dragoon { 
-    @include tileBackground(dragoon);
-  }
-  &.duchess {
-    @include tileBackground(duchess);
-  }
-  &.duke {
-    @include tileBackground(duke);
-  }
-  &.footman { 
-    @include tileBackground(footman);
-  }
-  &.general {
-    @include tileBackground(general);
-  }
-  &.knight {
-    @include tileBackground(knight);
-  }
-  &.marshall {
-    @include tileBackground(marshall);
-  }
-  &.oracle {
-    @include tileBackground(oracle);
-  }
-  &.pikeman { 
-    @include tileBackground(pikeman);
-  }
-  &.priest {
-    @include tileBackground(priest);
-  }
-  &.ranger { 
-    @include tileBackground(ranger);
-  }
-  &.seer {
-    @include tileBackground(seer);
-  }
-  &.wizard { 
-    @include tileBackground(wizard);
+  &:after {
+    display: block;
+    content: '';
+    padding-bottom: 100%;
   }
 }

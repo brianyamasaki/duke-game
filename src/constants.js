@@ -12,5 +12,5 @@ export const HIGHLIGHT_STRIKE = 'HIGHLIGHT_STRIKE';
 export const HIGHLIGHT_COMMAND = 'HIGHLIGHT_COMMAND';
 export const HIGHLIGHT_CAPTURE = 'HIGHLIGHT_CAPTURE';
 
-export const PLAYER_ZERO_WINS = 'PLAYER_ZERO_WINS';
-export const PLAYER_ONE_WINS = 'PLAYER_ONE_WINS';
+export const PLAYER_ZERO_WINS = 'Player One Wins';
+export const PLAYER_ONE_WINS = 'Player Two Wins';

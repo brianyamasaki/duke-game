@@ -1,15 +1,7 @@
-import React, { Component } from 'react';
-import { Grid } from 'react-bootstrap';
+import React from 'react';
 import Game from '../../components/game';
 
-class GamePage extends Component {
-  render() {
-    return (
-      <Grid>
-        <Game />
-      </Grid>
-    );
-  }
-}
-
+const GamePage = () => (
+  <Game />
+);
 export default GamePage;

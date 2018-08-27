@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SpacesOnBoard from './pieces';
+import { isDukeCaptured } from '../../../modules/selectors/isGameOver';
 
 import "./board.css";
 
@@ -8,8 +9,18 @@ class Board extends Component {
   state = {
     width: 0,
     height: 0,
-    piecePlacement: []
+    piecePlacement: [],
+    gameOverState: ''
   };
+
+  componentDidUpdate(prevProps) {
+    const { gameOverState} = this.props;
+    if (prevProps.gameOverState !== gameOverState) {
+      this.setState({
+        gameOverState
+      });
+    }
+  }
   
   componentWillUnmount() {
     window.removeEventListener('resize', this.onWindowResize);
@@ -57,8 +68,10 @@ class Board extends Component {
 }
 
 const mapStateToProps = state => {
+  const { boardState } = state;
   return {
-    currentPlayer: state.boardState.currentPlayer
+    currentPlayer: boardState.currentPlayer,
+    gameOverState: isDukeCaptured(state)
   }
 }
 
