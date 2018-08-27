@@ -17,7 +17,8 @@ import {
   TILE_PRIEST,
   TILE_SEER,
   TILE_RANGER,
-  TILE_PIKEMAN
+  TILE_PIKEMAN,
+  TILE_LONGBOWMAN
 } from '../../../cards';
 
 import './index.css';
@@ -76,10 +77,10 @@ class SidebarUi extends Component {
     );
   }
 
-  renderDebugTileDrawButton = (iPlayer, type, btnText) => {
+  renderDebugTileDrawButton = (iPlayer, type, btnText, i) => {
     const { players, selectTileInBag } = this.props;
     if (players[iPlayer].tilesInBag.find(tileInfo => tileInfo.type === type))
-      return <Button bsStyle='primary' onClick={()=> selectTileInBag(type)}>{btnText}</Button>
+      return <Button key={i} bsStyle='primary' onClick={()=> selectTileInBag(type)}>{btnText}</Button>
   }
 
   renderDrawTileButton = (i) => {
@@ -118,14 +119,19 @@ class SidebarUi extends Component {
       {
         type: TILE_PIKEMAN,
         text: 'Draw Pikeman'
+      },
+      {
+        type: TILE_LONGBOWMAN,
+        text: 'Draw Longbowman'
       }
     ];
     return (
       <div>
-        {tileTypes.map(tileType => this.renderDebugTileDrawButton(
+        {tileTypes.map((tileType, i) => this.renderDebugTileDrawButton(
           currentPlayer,
           tileType.type,
-          tileType.text
+          tileType.text,
+          i
         ))}
       </div>
     );

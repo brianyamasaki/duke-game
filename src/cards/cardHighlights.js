@@ -4,6 +4,7 @@ import {
   TILE_KNIGHT,
   TILE_PRIEST,
   TILE_SEER,
+  TILE_LONGBOWMAN,
   HIGHLIGHTS_DUKES_FOOTMEN,
   SLIDE_UP, 
   SLIDE_DOWN, 
@@ -41,6 +42,7 @@ import { priestMoves } from './priest';
 import { seerMoves } from './seer';
 import { rangerMoves } from './ranger';
 import { pikemanMoves } from './pikeman';
+import { longbowmanMoves } from './longbowman';
 
 const isTileOnSpace = (players, iSpace) => {
   let tileInfos = [];
@@ -80,6 +82,9 @@ export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
       break;
     case TILE_SEER:
       moves = seerMoves;
+      break;
+    case TILE_LONGBOWMAN:
+      moves = longbowmanMoves;
       break;
     case HIGHLIGHTS_DUKES_FOOTMEN:
       moves = dukeFootmen;

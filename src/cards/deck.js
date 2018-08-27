@@ -5,7 +5,8 @@ import {
   TILE_PRIEST,
   TILE_SEER,
   TILE_PIKEMAN,
-  TILE_RANGER
+  TILE_RANGER,
+  TILE_LONGBOWMAN
 } from './cardConstants';
 import { dukeMoves } from './duke';
 import { footmanMoves } from './footman'
@@ -14,6 +15,7 @@ import { priestMoves } from './priest';
 import { knightMoves } from './knight';
 import { rangerMoves } from './ranger';
 import { pikemanMoves } from './pikeman';
+import { longbowmanMoves } from './longbowman';
 
 const createCard = type => {
   let moves;
@@ -39,6 +41,9 @@ const createCard = type => {
     case TILE_RANGER:
       moves = rangerMoves;
       break;
+    case TILE_LONGBOWMAN:
+      moves = longbowmanMoves;
+      break;
     default:
       window.alert('illegal card type in createCard (deck.js)');
       break;
@@ -58,7 +63,8 @@ const deckContents = [
   { type: TILE_SEER, count: 1 },
   { type: TILE_PRIEST, count: 1 },
   { type: TILE_PIKEMAN, count: 3 },
-  { type: TILE_RANGER, count: 1 }
+  { type: TILE_RANGER, count: 1 },
+  { type: TILE_LONGBOWMAN, count: 1}
 ];
 
 export const shuffleDeck = () => {
