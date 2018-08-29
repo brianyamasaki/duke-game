@@ -4,7 +4,10 @@ import {
   TILE_KNIGHT,
   TILE_PRIEST,
   TILE_SEER,
+  TILE_RANGER,
+  TILE_PIKEMAN,
   TILE_LONGBOWMAN,
+  TILE_GENERAL,
   HIGHLIGHTS_DUKES_FOOTMEN,
   SLIDE_UP, 
   SLIDE_DOWN, 
@@ -14,13 +17,12 @@ import {
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
   SLIDE_DIAG_DOWN_RIGHT,
-  TILE_RANGER,
-  TILE_PIKEMAN,
   RULETYPE_MOVE,
   RULETYPE_JUMP,
   RULETYPE_STRIKE,
   RULETYPE_SLIDE,
   RULETYPE_JUMPSLIDE,
+  RULETYPE_COMMAND,
   DENYMOVESPACES
 } from './cardConstants';
 import { 
@@ -29,10 +31,11 @@ import {
   HIGHLIGHT_MOVE,
   HIGHLIGHT_JUMP,
   HIGHLIGHT_SLIDE,
-  // HIGHLIGHT_COMMAND,
+  HIGHLIGHT_COMMAND,
   HIGHLIGHT_STRIKE,
   HIGHLIGHT_JUMPSLIDE,
-  HIGHLIGHT_CAPTURE
+  HIGHLIGHT_CAPTURE,
+  HIGHLIGHT_CAPTURE_STRIKE
 } from '../constants';
 import { rowColToIndex, indexToRowCol } from '../shared';
 import { dukeMoves, dukeFootmen } from './duke';
@@ -43,6 +46,7 @@ import { seerMoves } from './seer';
 import { rangerMoves } from './ranger';
 import { pikemanMoves } from './pikeman';
 import { longbowmanMoves } from './longbowman';
+import { generalMoves } from './general';
 
 const isTileOnSpace = (players, iSpace) => {
   let tileInfos = [];
@@ -86,6 +90,9 @@ export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
     case TILE_LONGBOWMAN:
       moves = longbowmanMoves;
       break;
+    case TILE_GENERAL:
+      moves = generalMoves;
+      break;
     case HIGHLIGHTS_DUKES_FOOTMEN:
       moves = dukeFootmen;
       break;
@@ -102,6 +109,7 @@ const highlightTypes = {
   RULETYPE_SLIDE: HIGHLIGHT_SLIDE,
   RULETYPE_JUMPSLIDE: HIGHLIGHT_JUMPSLIDE,
   RULETYPE_STRIKE: HIGHLIGHT_STRIKE,
+  RULETYPE_COMMAND: HIGHLIGHT_COMMAND
 }
 
 const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
@@ -133,6 +141,8 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
             key
           )
         );
+        break;
+      case RULETYPE_COMMAND:
         break;
       case 'type':
         console.log('Reading rule for tile type ' + ruleSet[key]);
@@ -198,7 +208,7 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
       } else if (tileInfo.iPlayer !== iPlayer) {
         return {
           iSpace,
-          type: HIGHLIGHT_CAPTURE
+          type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
         }
       }
     }
@@ -270,7 +280,7 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
         } else if (tileInfo.iPlayer !== iPlayer) {
           highlights.push({
             iSpace: iSpaceT,
-            type: HIGHLIGHT_CAPTURE
+            type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
           });
           if (ruleType !== RULETYPE_JUMPSLIDE)
             break;

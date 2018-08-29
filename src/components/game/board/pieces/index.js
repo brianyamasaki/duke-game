@@ -4,7 +4,8 @@ import Tile from './tile';
 import { 
   BOARD_SPACE_DIVISOR, 
   HIGHLIGHT_STRIKE, 
-  HIGHLIGHT_CAPTURE 
+  HIGHLIGHT_CAPTURE,
+  HIGHLIGHT_CAPTURE_STRIKE
 } from '../../../../constants';
 import { 
   spacesInit, 
@@ -84,6 +85,9 @@ class SpacesOnBoard extends Component {
       classes.push('highlight');
       if (highlight.type === HIGHLIGHT_CAPTURE) {
         classes.push('capture');
+      } else if (highlight.type === HIGHLIGHT_CAPTURE_STRIKE) {
+        classes.push('capture');
+        classes.push('strike');
       }
     }
     if (isSelected) {

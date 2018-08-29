@@ -2,8 +2,8 @@ import {
   BOARD_ROW_COUNT, 
   BOARD_COL_COUNT,
   HIGHLIGHT_MOVE,
-  HIGHLIGHT_STRIKE,
-  HIGHLIGHT_CAPTURE
+  HIGHLIGHT_CAPTURE,
+  HIGHLIGHT_CAPTURE_STRIKE
 } from '../constants';
 import { 
   shuffleDeck,
@@ -290,7 +290,7 @@ export default (state = initialState, action) => {
                     playerOther.tilesOnBoard.splice(tileToCaptureIndex, 1);
                   }
                 }
-                if (action.payload.highlightType !== HIGHLIGHT_STRIKE) {
+                if (action.payload.highlightType !== HIGHLIGHT_CAPTURE_STRIKE) {
                   // actually move the selected tile
                   tileSelected.iSpace = action.payload.iSpace;
                 }

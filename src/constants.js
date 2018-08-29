@@ -10,7 +10,8 @@ export const HIGHLIGHT_SLIDE = 'HIGHLIGHT_SLIDE';
 export const HIGHLIGHT_JUMPSLIDE = 'HIGHLIGHT_JUMPSLIDE';
 export const HIGHLIGHT_STRIKE = 'HIGHLIGHT_STRIKE';
 export const HIGHLIGHT_COMMAND = 'HIGHLIGHT_COMMAND';
-export const HIGHLIGHT_CAPTURE = 'HIGHLIGHT_CAPTURE';
+export const HIGHLIGHT_CAPTURE = 'HIGHLIGHT_CAPTURE'; // highlights for capturing a tile that would move the tile
+export const HIGHLIGHT_CAPTURE_STRIKE = 'HIGHLIGHT_CAPTURE_STRIKE'; // highlights for capturing a tile that would not move the tile
 
 export const PLAYER_ZERO_WINS = 'Player One Wins';
 export const PLAYER_ONE_WINS = 'Player Two Wins';

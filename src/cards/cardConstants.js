@@ -37,4 +37,5 @@ export const RULETYPE_JUMP = 'jump';
 export const RULETYPE_SLIDE = 'slide';
 export const RULETYPE_JUMPSLIDE = 'jumpslide';
 export const RULETYPE_STRIKE = 'strike';
+export const RULETYPE_COMMAND = 'command';
 export const DENYMOVESPACES = 'denyMoveSpaces';

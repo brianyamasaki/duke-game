@@ -5,7 +5,8 @@
     &:hover {
       background-color: rgba(255, 255, 0, 0.6)
     }
-    &.capture {
+    &.capture,
+    &.strike {
       background-color: rgba(255, 0, 0, 0.3);
       border: 1px solid rgba(255, 0, 0, 1);
       &:hover {
