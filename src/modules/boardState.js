@@ -62,14 +62,11 @@ const initialState = {
   gameDebugMode: false
 };
 
-const cloneAndModifyPlayer = (players, iPlayer, fn) => {
-  return players.map((player, i) => {
-    const playerCopy = cloneObject(player);
-    if (i === iPlayer) {
-      fn(playerCopy);  
-    }
-    return playerCopy;
-  })
+const cloneAndModifyPlayers = (players, iPlayer, fn) => {
+  const playersCopy = cloneObject(players);
+
+  fn(playersCopy);
+  return playersCopy;
 }
 
 export const spacesNew = () => {
@@ -175,11 +172,11 @@ export default (state = initialState, action) => {
         gameDebugMode: action.payload
       };
     case GAME_DUKE_PLACED:
-      playersClone = cloneAndModifyPlayer(
+      playersClone = cloneAndModifyPlayers(
         state.players, 
         state.currentPlayer, 
-        (player) => placeTileFromBagOnBoard(
-          player, 
+        (players) => placeTileFromBagOnBoard(
+          players[state.currentPlayer], 
           state.currentPlayer, 
           TILE_DUKE, action.payload.iSpace)
       );
@@ -208,11 +205,11 @@ export default (state = initialState, action) => {
           state.currentPlayer
         ),
         uiHint: action.payload.uiHint,
-        players: cloneAndModifyPlayer(
+        players: cloneAndModifyPlayers(
           state.players, 
           state.currentPlayer, 
-          (player) => placeTileFromBagOnBoard(
-            player, 
+          (players) => placeTileFromBagOnBoard(
+            players[state.currentPlayer], 
             state.currentPlayer, 
             TILE_FOOTMAN, 
             action.payload.iSpace)
@@ -224,11 +221,11 @@ export default (state = initialState, action) => {
         gameState: GAME_SELECT_OR_DRAW,
         highlighted: [], // no highlighted spaces
         uiHint: action.payload.uiHint,
-        players: cloneAndModifyPlayer(
+        players: cloneAndModifyPlayers(
           state.players, 
           state.currentPlayer, 
-          (player) => placeTileFromBagOnBoard(
-            player, 
+          (players) => placeTileFromBagOnBoard(
+            players[state.currentPlayer], 
             state.currentPlayer, 
             TILE_FOOTMAN, 
             action.payload.iSpace)
@@ -273,17 +270,18 @@ export default (state = initialState, action) => {
         ...state,
         highlighted: [],
         selected: [],
-        players: cloneAndModifyPlayer(
+        players: cloneAndModifyPlayers(
           state.players,
           state.currentPlayer,
-          (player) => {
+          (players) => {
+            const player = players[state.currentPlayer];
             if (state.selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
               // move tile currently on the board
               const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
               if (tileSelected) {
                 if (action.payload.highlightType === HIGHLIGHT_CAPTURE) {
                   // remove captured tile off of board
-                  const playerOther = state.players[state.currentPlayer ? 0 : 1];
+                  const playerOther = players[state.currentPlayer ? 0 : 1];
                   const tileToCaptureIndex = playerOther.tilesOnBoard.findIndex((tileInfo) => tileInfo.iSpace === action.payload.iSpace);
                   if (tileToCaptureIndex !== -1) {
                     playerOther.tilesCaptured.push(playerOther.tilesOnBoard[tileToCaptureIndex]);

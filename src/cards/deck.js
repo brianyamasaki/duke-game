@@ -9,53 +9,10 @@ import {
   TILE_LONGBOWMAN,
   TILE_GENERAL
 } from './cardConstants';
-import { dukeMoves } from './duke';
-import { footmanMoves } from './footman'
-import { seerMoves } from './seer';
-import { priestMoves } from './priest';
-import { knightMoves } from './knight';
-import { rangerMoves } from './ranger';
-import { pikemanMoves } from './pikeman';
-import { longbowmanMoves } from './longbowman';
-import { generalMoves } from './general';
 
 const createCard = type => {
-  let moves;
-  switch(type) {
-    case TILE_DUKE:
-      moves = dukeMoves;
-      break;
-    case TILE_FOOTMAN:
-      moves = footmanMoves;
-      break;
-    case TILE_SEER:
-      moves = seerMoves;
-      break;
-    case TILE_PRIEST:
-      moves = priestMoves;
-      break;
-    case TILE_KNIGHT:
-      moves = knightMoves;
-      break;
-    case TILE_PIKEMAN:
-      moves = pikemanMoves;
-      break;
-    case TILE_RANGER:
-      moves = rangerMoves;
-      break;
-    case TILE_LONGBOWMAN:
-      moves = longbowmanMoves;
-      break;
-    case TILE_GENERAL:
-      moves = generalMoves;
-      break;
-    default:
-      window.alert('illegal card type in createCard (deck.js)');
-      break;
-  }
   return {
     type,
-    moves,
     moveIndex: 1,
     spaceIndex: -1
   }
