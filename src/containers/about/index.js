@@ -2,10 +2,10 @@ import React from 'react'
 import { Grid } from 'react-bootstrap'
 
 const details = [
-  'Tiles can now capture opponent tiles'
+  'Now both dark and light tiles can capture tiles!',
+  'Supporting moves blocked by tiles'
 ];
 const todos = [
-  'Not supporting moves blocked by tiles'
 ];
 const About = () => (
   <Grid>

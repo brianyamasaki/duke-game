@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'react-bootstrap';
 import Tile from '../../game/board/pieces/tile';
+import TileSvg from '../../game/board/pieces/tilesvg';
 
 import packageJson from '../../../../package.json';
 import { 
@@ -22,6 +23,37 @@ import {
 } from '../../../cards';
 
 import './index.css';
+
+const tileTypes = [
+  { 
+    type: TILE_KNIGHT,
+    text: 'Draw Knight'
+  },
+  {
+    type: TILE_SEER,
+    text: 'Draw Seer'
+  },
+  {
+    type: TILE_PRIEST,
+    text: 'Draw Priest'
+  },
+  { 
+    type: TILE_FOOTMAN,
+    text: 'Draw Footman'
+  },
+  {
+    type: TILE_RANGER,
+    text: 'Draw Ranger'
+  },
+  {
+    type: TILE_PIKEMAN,
+    text: 'Draw Pikeman'
+  },
+  {
+    type: TILE_LONGBOWMAN,
+    text: 'Draw Longbowman'
+  }
+];
 
 class SidebarUi extends Component {
   state = {
@@ -95,36 +127,6 @@ class SidebarUi extends Component {
         </div>
       )
     }
-    const tileTypes = [
-      { 
-        type: TILE_KNIGHT,
-        text: 'Draw Knight'
-      },
-      {
-        type: TILE_SEER,
-        text: 'Draw Seer'
-      },
-      {
-        type: TILE_PRIEST,
-        text: 'Draw Priest'
-      },
-      { 
-        type: TILE_FOOTMAN,
-        text: 'Draw Footman'
-      },
-      {
-        type: TILE_RANGER,
-        text: 'Draw Ranger'
-      },
-      {
-        type: TILE_PIKEMAN,
-        text: 'Draw Pikeman'
-      },
-      {
-        type: TILE_LONGBOWMAN,
-        text: 'Draw Longbowman'
-      }
-    ];
     return (
       <div>
         {tileTypes.map((tileType, i) => this.renderDebugTileDrawButton(
@@ -174,6 +176,16 @@ class SidebarUi extends Component {
     )
   }
 
+  renderTileSvg = () => {
+    return tileTypes.map(tile => (
+      <div>
+        <TileSvg type={tile.type} moves={1} />
+        <TileSvg type={tile.type} moves={2} /> 
+      </div>
+      )
+    )
+  }
+
   render() {
     const { players } = this.props;
 
@@ -183,6 +195,7 @@ class SidebarUi extends Component {
         {this.renderEndOfTurn()}
         {this.renderDebugControl()}
         <p className='smallFont'>Version {packageJson.version}</p>
+        {this.renderTileSvg()}
       </div>
     );
   }

@@ -2,6 +2,7 @@ import { TILE_LONGBOWMAN } from './cardConstants';
 
 export const longbowmanMoves = {
   type: TILE_LONGBOWMAN,
+  pieceCenter: { row: 3, col: 2 },
   odd: {
     move: [
       { row: -1, col: 0 },
