@@ -19,10 +19,6 @@ export const TILE_DUCHESS = 'duchess';
 export const TILE_ORACLE = 'oracle';
 export const HIGHLIGHTS_DUKES_FOOTMEN = 'highlights-dukes-footmen';
 
-export const POS_ABOVE = 'POS_ABOVE';
-export const POS_BELOW = 'POS_BELOW';
-export const POS_LEFT = 'POS_LEFT';
-export const POS_RIGHT = 'POS_RIGHT';
 export const SLIDE_LEFT = 'SLIDE_LEFT';
 export const SLIDE_RIGHT = 'SLIDE_RIGHT';
 export const SLIDE_UP = 'SLIDE_UP';

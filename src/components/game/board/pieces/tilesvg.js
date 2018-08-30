@@ -13,7 +13,8 @@ import {
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
   SLIDE_DIAG_DOWN_RIGHT,
-  RULETYPE_JUMPSLIDE
+  RULETYPE_JUMPSLIDE,
+  TILE_LONGBOWMAN
 } from '../../../../cards/cardConstants';
 import { movesFromTiletype } from '../../../../cards/cardHelpers';
 import strikePolyPoints from '../../../game/shapes/strikeStar';
@@ -165,17 +166,31 @@ class Tile extends Component {
     
         );
       case RULETYPE_SLIDE:
+      // case RULETYPE_JUMPSLIDE:
         points = mpSlideTypePolygonOffsets[ruleMarker.slideType].map(offset => 
           `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
         );
+        if (ruleMarker.ruleType === RULETYPE_SLIDE) {
+          return (
+            <polygon
+              fill="000"
+              points={points.join(' ')}
+              key={i}
+            />
+          );
+        }
         return (
           <polygon
-            fill="000"
+            fill="none"
+            stroke="#000"
+            strokeWidth="8"
             points={points.join(' ')}
             key={i}
           />
         );
+
       default:
+        window.alert('No support for rules of type ' + ruleMarker.ruleType);
         break;
     }
     return;
@@ -202,18 +217,42 @@ class Tile extends Component {
   }
 
   renderSideIndicator() {
+    const polygonOffsets = [
+      { x: -16, y: 24 },
+      { x: -22, y: 39.5 },
+      { x: 21, y: 39.5 },
+      { x: 15, y: 24 }
+    ];
+    const x = 250;
+    const y = this.state.type === TILE_LONGBOWMAN ? 350 : 250;
+    const polyPoints = polygonOffsets.map(offset => (
+      `${x + offset.x},${y + offset.y}`
+    ));
+
     if (this.state.isFront) {
       return (
-        <path 
-          fill="#000" 
-          d="M266.521 275.034h-5.067a9.014 9.014 0 0 0 1.857-5.48v-28.519c0-3.26-1.723-6.134-4.331-7.765 2.953-2.348 4.877-5.923 4.877-9.976 0-7.065-5.743-12.794-12.808-12.794-7.074 0-12.799 5.729-12.799 12.794 0 4.053 1.925 7.627 4.869 9.976-2.594 1.631-4.33 4.504-4.33 7.765v28.519c0 2.063.705 3.952 1.856 5.48h-5.067l-6.401 15.466h43.745l-6.401-15.466z"
-        />
-      )
+        <g>
+          <circle cx={x} cy={y - 27.75} r="12.75"/>
+          <polygon 
+            points={polyPoints.join(' ')}
+          />
+          <circle cx={x} cy={y - 9} r="12.5"/>
+          <circle cx={x} cy={y + 16.666} r="12.5"/>
+          <rect x={x - 12.5} y={y - 10} width="25" height="26"/>
+        </g>
+      );
     }
     return (
-      <path 
-        d="M200 200v100h100V200H200zm27.627 91l6.402-16h5.066c-1.151-1-2.096-3.383-2.096-5.446v-28.519c0-3.26 1.855-6.134 4.449-7.765-2.943-2.348-4.809-5.923-4.809-9.976 0-7.065 5.756-12.794 12.829-12.794 7.064 0 12.823 5.729 12.823 12.794 0 4.053-1.797 7.627-4.75 9.976 2.607 1.631 4.457 4.504 4.457 7.765v28.519c0 2.063-.936 4.446-2.096 5.446h5.066l6.402 16h-43.743z"
-      />
+      <g>
+        <rect x={x - 50} y={y - 50} width="100" height="100" />
+        <circle fill="#fff" cx={x} cy={y - 27.75} r="12.75"/>
+        <polygon fill="#fff"
+          points={polyPoints.join(' ')}
+        />
+        <circle fill="#fff" cx={x} cy={y - 9} r="12.5"/>
+        <circle fill="#fff" cx={x} cy={y + 16.666} r="12.5"/>
+        <rect fill="#fff" x={x - 12.5} y={y - 10} width="25" height="26"/>
+      </g>
     );
   }
 
