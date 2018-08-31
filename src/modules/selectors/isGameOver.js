@@ -12,18 +12,18 @@ export const isDukeCaptured = createSelector(
     if (gameState !== GAME_SELECT_OR_DRAW) {
       return;
     }
-    const hasDuke = [];
+    const dukeCaptured = [];
     players.forEach((player, iPlayer) => {
-      const tileInfo = player.tilesOnBoard.find(tileInfo => (
+      const tileInfo = player.tilesCaptured.find(tileInfo => (
         tileInfo.type === 'duke'
       ));
-      hasDuke[iPlayer] = tileInfo ? true : false;
+      dukeCaptured[iPlayer] = tileInfo ? true : false;
     })
-    if (hasDuke[0] && hasDuke[1]) {
-      return;
-    } else if (!hasDuke[0]) {
+    if (dukeCaptured[0]) {
       return PLAYER_ONE_WINS;
+    } else if (dukeCaptured[1]) {
+      return PLAYER_ZERO_WINS;
     }
-    return PLAYER_ZERO_WINS;
+    return;
   }
 )

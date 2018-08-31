@@ -7,6 +7,14 @@ class GameOverModal extends Component {
     message: ''
   };
 
+  componentDidMount() {
+    const { show, message } = this.props;
+    this.setState({
+      show, 
+      message
+    });
+  }
+
   componentDidUpdate(prevProps) {
     const { show, message } = this.props;
     if (prevProps.show !== show) {
@@ -24,7 +32,7 @@ class GameOverModal extends Component {
   render() {
     return (
       <Modal.Dialog show={this.state.show}>
-        <Modal.Title>The Duke</Modal.Title>
+        <Modal.Title className='text-center'>The Duke</Modal.Title>
         <Modal.Body>{this.state.message}</Modal.Body>
       </Modal.Dialog>
     );

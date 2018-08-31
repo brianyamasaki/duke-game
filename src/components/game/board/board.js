@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SpacesOnBoard from './pieces';
+import GameOverModal from './gameOver';
 import { isDukeCaptured } from '../../../modules/selectors/isGameOver';
 
 import "./board.css";
@@ -41,6 +42,11 @@ class Board extends Component {
       width: bounds.width
     });
   }
+  renderModal = () => {
+    if (this.props.gameOverState) {
+      return <GameOverModal show={true} message={this.props.gameOverState} />;
+    }
+  }
 
   render() {
     const style = {
@@ -57,11 +63,14 @@ class Board extends Component {
     }
     
     return (
-      <div 
-        className={classes.join(' ')} 
-        ref={this.refCallback} 
-        style={style}>
-        <SpacesOnBoard boardWidth={this.state.width}/>
+      <div>
+        <div 
+          className={classes.join(' ')} 
+          ref={this.refCallback} 
+          style={style}>
+          <SpacesOnBoard boardWidth={this.state.width}/>
+        </div>
+        {this.renderModal()}
       </div>
     );
   }
