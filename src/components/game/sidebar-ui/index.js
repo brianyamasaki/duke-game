@@ -11,48 +11,12 @@ import {
   swapPlayers
 } from '../../../modules/boardState';
 
-import { 
-  TILE_KNIGHT,
-  TILE_FOOTMAN,
-  TILE_PRIEST,
-  TILE_SEER,
-  TILE_RANGER,
-  TILE_PIKEMAN,
-  TILE_LONGBOWMAN
-} from '../../../cards';
+import {
+  allTiletypes,
+  nameFromTiletype
+} from '../../../cards/cardHelpers';
 
 import './index.css';
-
-const tileTypes = [
-  { 
-    type: TILE_KNIGHT,
-    text: 'Draw Knight'
-  },
-  {
-    type: TILE_SEER,
-    text: 'Draw Seer'
-  },
-  {
-    type: TILE_PRIEST,
-    text: 'Draw Priest'
-  },
-  { 
-    type: TILE_FOOTMAN,
-    text: 'Draw Footman'
-  },
-  {
-    type: TILE_RANGER,
-    text: 'Draw Ranger'
-  },
-  {
-    type: TILE_PIKEMAN,
-    text: 'Draw Pikeman'
-  },
-  {
-    type: TILE_LONGBOWMAN,
-    text: 'Draw Longbowman'
-  }
-];
 
 class SidebarUi extends Component {
   state = {
@@ -128,10 +92,10 @@ class SidebarUi extends Component {
     }
     return (
       <div>
-        {tileTypes.map((tileType, i) => this.renderDebugTileDrawButton(
+        {allTiletypes().map((tileType, i) => this.renderDebugTileDrawButton(
           currentPlayer,
-          tileType.type,
-          tileType.text,
+          tileType,
+          `Draw ${nameFromTiletype(tileType)}`,
           i
         ))}
       </div>
@@ -176,7 +140,7 @@ class SidebarUi extends Component {
   }
 
   renderTileSvg = () => {
-    return tileTypes.map((tile, i) => (
+    return allTiletypes().map((tile, i) => (
       <div key={i} >
         <TileSvg type={tile.type} moves={1} />
         <TileSvg type={tile.type} moves={2} /> 

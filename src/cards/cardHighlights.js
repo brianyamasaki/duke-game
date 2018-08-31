@@ -1,14 +1,4 @@
 import { 
-  TILE_DUKE,
-  TILE_FOOTMAN,
-  TILE_KNIGHT,
-  TILE_PRIEST,
-  TILE_SEER,
-  TILE_RANGER,
-  TILE_PIKEMAN,
-  TILE_LONGBOWMAN,
-  TILE_GENERAL,
-  HIGHLIGHTS_DUKES_FOOTMEN,
   SLIDE_UP, 
   SLIDE_DOWN, 
   SLIDE_RIGHT, 
@@ -37,16 +27,10 @@ import {
   HIGHLIGHT_CAPTURE,
   HIGHLIGHT_CAPTURE_STRIKE
 } from '../constants';
+import { 
+  movesFromTiletype
+} from './cardHelpers';
 import { rowColToIndex, indexToRowCol } from '../shared';
-import { dukeMoves, dukeFootmen } from './duke';
-import { footmanMoves } from './footman';
-import { knightMoves } from './knight';
-import { priestMoves } from './priest';
-import { seerMoves } from './seer';
-import { rangerMoves } from './ranger';
-import { pikemanMoves } from './pikeman';
-import { longbowmanMoves } from './longbowman';
-import { generalMoves } from './general';
 
 const isTileOnSpace = (players, iSpace) => {
   let tileInfos = [];
@@ -64,42 +48,7 @@ const isTileOnSpace = (players, iSpace) => {
 };
 
 export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
-  let moves;
-  switch (type) {
-    case TILE_DUKE:
-      moves = dukeMoves;
-      break;
-    case TILE_FOOTMAN:
-      moves = footmanMoves;
-      break;
-    case TILE_KNIGHT:
-      moves = knightMoves;
-      break;
-    case TILE_PIKEMAN:
-      moves = pikemanMoves;
-      break;
-    case TILE_PRIEST:
-      moves = priestMoves;
-      break;
-    case TILE_RANGER:
-      moves = rangerMoves;
-      break;
-    case TILE_SEER:
-      moves = seerMoves;
-      break;
-    case TILE_LONGBOWMAN:
-      moves = longbowmanMoves;
-      break;
-    case TILE_GENERAL:
-      moves = generalMoves;
-      break;
-    case HIGHLIGHTS_DUKES_FOOTMEN:
-      moves = dukeFootmen;
-      break;
-    default:
-      window.alert('No movement rules for tile type ' + type);
-      return [];
-  }
+  const moves = movesFromTiletype(type);
   return highlightsFromRules(players, iSpace, moves, isOdd, iPlayer);
 };
 

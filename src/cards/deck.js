@@ -7,7 +7,8 @@ import {
   TILE_PIKEMAN,
   TILE_RANGER,
   TILE_LONGBOWMAN,
-  TILE_GENERAL
+  TILE_GENERAL,
+  TILE_MARSHALL
 } from './cardConstants';
 
 const createCard = type => {
@@ -27,7 +28,8 @@ const deckContents = [
   { type: TILE_PIKEMAN, count: 3 },
   { type: TILE_RANGER, count: 1 },
   { type: TILE_LONGBOWMAN, count: 1},
-  { type: TILE_GENERAL, count: 1}
+  { type: TILE_GENERAL, count: 1},
+  { type: TILE_MARSHALL, count: 1}
 ];
 
 export const shuffleDeck = () => {

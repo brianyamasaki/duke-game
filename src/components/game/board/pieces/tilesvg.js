@@ -16,7 +16,7 @@ import {
   RULETYPE_JUMPSLIDE,
   TILE_LONGBOWMAN
 } from '../../../../cards/cardConstants';
-import { movesFromTiletype } from '../../../../cards/cardHelpers';
+import { movesFromTiletype, nameFromTiletype } from '../../../../cards/cardHelpers';
 import strikePolyPoints from '../../../game/shapes/strikeStar';
 import { 
   upArrow,
@@ -28,6 +28,11 @@ import {
   downLeftArrow,
   downRightArrow
 } from '../../../game/shapes/slidePolygons';
+
+import { 
+ commandPolyBottom,
+ commandPolyTop
+} from '../../../game/shapes/commandPolygons';
 
 import './tile.css';
 
@@ -190,6 +195,25 @@ class Tile extends Component {
             key={i}
           />
         );
+      case RULETYPE_COMMAND:
+        points = commandPolyBottom.map(offset => 
+          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
+        );
+        const points2 = commandPolyTop.map(offset =>
+          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
+        );
+        return (
+          <g key={i}>
+            <polygon
+              fill="#000"
+              points={points.join(' ')}
+            />
+            <polygon
+              fill="000"
+              points={points2.join(' ')}
+            />
+          </g>
+        )
 
       default:
         window.alert('No support for rules of type ' + ruleMarker.ruleType);
@@ -209,7 +233,7 @@ class Tile extends Component {
   }
 
   renderTitle() {
-    const title = this.state.type.slice(0,1).toUpperCase() + this.state.type.slice(1);
+    const title = nameFromTiletype(this.state.type);
     const fontSize = title.length > 8 ? 70 : 100
     return (
       <foreignObject x="0" y="500" width="500" height="200" fontSize={fontSize}>
