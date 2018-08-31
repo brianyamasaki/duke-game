@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Tile from './tile';
+import TileSvg from './tilesvg';
 import { 
   BOARD_SPACE_DIVISOR, 
   HIGHLIGHT_STRIKE, 
@@ -17,7 +17,6 @@ import {
 } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 import StrikeIcon from '../../../../icons/strike-icon';
-import CaptureIcon from '../../../../icons/capture-icon';
 
 import './index.css';
 
@@ -54,7 +53,7 @@ class SpacesOnBoard extends Component {
 
   renderTile = (tile) => {
     if (!tile.type) return;
-    return <Tile type={tile.type} player={tile.iPlayer} moves={tile.moves} />
+    return <TileSvg type={tile.type} player={tile.iPlayer} moves={tile.moves} />
   }
 
   renderHighlightIcon = (highlight) => {

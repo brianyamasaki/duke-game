@@ -29,6 +29,8 @@ import {
   downRightArrow
 } from '../../../game/shapes/slidePolygons';
 
+import './tile.css';
+
 const mpSlideTypePos = {
   [SLIDE_UP]: { row: -1, col: 0 },
   [SLIDE_DOWN]: { row: 1, col: 0 },
@@ -207,10 +209,12 @@ class Tile extends Component {
   }
 
   renderTitle() {
+    const title = this.state.type.slice(0,1).toUpperCase() + this.state.type.slice(1);
+    const fontSize = title.length > 8 ? 70 : 100
     return (
-      <foreignObject x="0" y="500" width="500" height="200" fontSize="90">
+      <foreignObject x="0" y="500" width="500" height="200" fontSize={fontSize}>
         <div className="title-container" xmlns="http://www.w3.org/1999/xhtml">
-          {this.state.type}
+          {title}
         </div>
       </foreignObject>
     );
@@ -261,10 +265,18 @@ class Tile extends Component {
       return null;
     }
     const { strokeWidth } = this.state;
+    const classes = ['svgTile'];
+    if (!this.props.isPreview) {
+      classes.push('rotateDark')
+    }
+    if (this.props.player) {
+      classes.push('dark');
+    }
     return (
       <svg 
         baseProfile="basic" 
         viewBox="0 0 700 700"
+        className={classes.join(' ')}
       >
         <path
           stroke="#000" 

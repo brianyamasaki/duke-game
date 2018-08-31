@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Row, Col } from 'react-bootstrap';
-import Tile from '../../game/board/pieces/tile';
 import TileSvg from '../../game/board/pieces/tilesvg';
 
 import packageJson from '../../../../package.json';
@@ -87,10 +86,10 @@ class SidebarUi extends Component {
     return (
       <Row>
         <Col md={6} >
-          <Tile isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={1} />
+          <TileSvg isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={1} />
         </Col>
         <Col md={6} >
-          <Tile isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={2}/>
+          <TileSvg isPreview={true} type={selectedTile.tileType} player={currentPlayer} moves={2}/>
         </Col>
       </Row>
     );
@@ -177,8 +176,8 @@ class SidebarUi extends Component {
   }
 
   renderTileSvg = () => {
-    return tileTypes.map(tile => (
-      <div>
+    return tileTypes.map((tile, i) => (
+      <div key={i} >
         <TileSvg type={tile.type} moves={1} />
         <TileSvg type={tile.type} moves={2} /> 
       </div>
@@ -195,7 +194,6 @@ class SidebarUi extends Component {
         {this.renderEndOfTurn()}
         {this.renderDebugControl()}
         <p className='smallFont'>Version {packageJson.version}</p>
-        {this.renderTileSvg()}
       </div>
     );
   }

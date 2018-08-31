@@ -60,3 +60,21 @@ $tileTypes: bowman champion dragoon duchess duke footman general knight marshall
     padding-bottom: 100%;
   }
 }
+
+.svgTile {
+  background-image: url('./images/light.jpg');
+  background-size: 100%;
+  margin: 5%;
+
+  &.dark {
+    background-image: url('./images/dark.jpg');
+    &.rotateDark {
+      transform: rotate(180deg);
+    }
+  }
+  .title-container {
+    font-weight: 700;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center
+  }
+}
