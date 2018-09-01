@@ -17,6 +17,7 @@ import {
 } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
 import StrikeIcon from '../../../../icons/strike-icon';
+import CaptureIcon from '../../../../icons/capture-icon';
 
 import './index.css';
 
@@ -51,9 +52,11 @@ class SpacesOnBoard extends Component {
     spaceClicked(i, boardState.gameState, tileType, isOdd, highlight ? highlight.type : null);
   }
 
-  renderTile = (tile) => {
-    if (!tile.type) return;
-    return <TileSvg type={tile.type} player={tile.iPlayer} moves={tile.moves} />
+  renderTile = (tile, highlight) => {
+    if (!tile.type && highlight) {
+      return this.renderHighlightIcon(highlight)
+    }
+    return <TileSvg type={tile.type} player={tile.iPlayer} moves={tile.moves} highlight={highlight} />
   }
 
   renderHighlightIcon = (highlight) => {
@@ -62,8 +65,8 @@ class SpacesOnBoard extends Component {
     switch (highlight.type) {
       case HIGHLIGHT_STRIKE:
         return <StrikeIcon />;
-      // case HIGHLIGHT_CAPTURE:
-      //   return <CaptureIcon />;
+      case HIGHLIGHT_CAPTURE:
+        return <CaptureIcon />;
       default: 
         return;
     }
@@ -95,6 +98,7 @@ class SpacesOnBoard extends Component {
     return (
       <span 
         key={i} 
+        id={'space' + i}
         className={classes.join(' ')}
         onClick={e => {
           if (isSelected) {
@@ -104,8 +108,7 @@ class SpacesOnBoard extends Component {
           (highlight || isTileSelectable) && this.onClick(e, i, space.type, space.moves, highlight)
         }}
         style={style}>
-        { this.renderTile(space)}
-        { this.renderHighlightIcon(highlight)}
+        { this.renderTile(space, highlight)}
       </span> 
     );
   }

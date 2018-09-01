@@ -16,8 +16,12 @@ import {
   RULETYPE_JUMPSLIDE,
   TILE_LONGBOWMAN
 } from '../../../../cards/cardConstants';
+import {
+  HIGHLIGHT_COMMAND,
+  HIGHLIGHT_CAPTURE_STRIKE
+} from '../../../../constants';
 import { movesFromTiletype, nameFromTiletype } from '../../../../cards/cardHelpers';
-import strikePolyPoints from '../../../game/shapes/strikeStar';
+import { strikeIconPoints } from '../../../game/shapes/strikeStar';
 import { 
   upArrow,
   leftArrow,
@@ -30,8 +34,7 @@ import {
 } from '../../../game/shapes/slidePolygons';
 
 import { 
- commandPolyBottom,
- commandPolyTop
+ commandPolygons
 } from '../../../game/shapes/commandPolygons';
 
 import './tile.css';
@@ -104,20 +107,22 @@ class Tile extends Component {
   state = {
     isFront: true,
     type: null, 
-    strokeWidth: 8
+    strokeWidth: 8,
+    highlight: ''
   };
   moveRadius = 32;
 
   componentDidMount() {
-    const { type, moves } = this.props;
+    const { type, moves, highlight } = this.props;
     this.setState({
       isFront: moves % 2 === 1,
-      type
+      type,
+      highlight
     });
   }
 
   componentDidUpdate(prevProps) {
-    const { type, moves } = this.props;
+    const { type, moves, highlight } = this.props;
     if (prevProps.type !== type) {
       this.setState({
         type
@@ -125,7 +130,12 @@ class Tile extends Component {
     }
     if (prevProps.moves !== moves) {
       this.setState({
-        moves
+        isFront: moves % 2 === 1
+      });
+    }
+    if (prevProps.highlight !== highlight) {
+      this.setState({
+        highlight
       });
     }
   }
@@ -158,16 +168,13 @@ class Tile extends Component {
           />
         );
       case RULETYPE_STRIKE:
-        points = strikePolyPoints.map(offset => (
-          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
-        ));
         return (
           <polygon 
             fill="none" 
             stroke="#000000" 
             strokeWidth="6" 
             strokeMiterlimit="10" 
-            points={points.join(' ')}
+            points={strikeIconPoints(ruleMarker, 100)}
             key={i}
           />
     
@@ -196,21 +203,16 @@ class Tile extends Component {
           />
         );
       case RULETYPE_COMMAND:
-        points = commandPolyBottom.map(offset => 
-          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
-        );
-        const points2 = commandPolyTop.map(offset =>
-          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
-        );
+        const polygonPoints = commandPolygons(ruleMarker, 100);
         return (
           <g key={i}>
             <polygon
               fill="#000"
-              points={points.join(' ')}
+              points={polygonPoints[0]}
             />
             <polygon
               fill="000"
-              points={points2.join(' ')}
+              points={polygonPoints[1]}
             />
           </g>
         )
@@ -283,6 +285,41 @@ class Tile extends Component {
       </g>
     );
   }
+  renderHighlight() {
+    const { highlight } = this.state;
+    if (highlight) {
+      switch (highlight.type) {
+        case HIGHLIGHT_CAPTURE_STRIKE:
+        return (
+          <polygon 
+            fill="none" 
+            stroke="#000000" 
+            strokeWidth="40" 
+            strokeMiterlimit="10" 
+            strokeOpacity="0.6"
+            points={strikeIconPoints({ x: 50, y: 50}, 700)}
+          />
+        );
+        case HIGHLIGHT_COMMAND:
+          const polygonPoints = commandPolygons({x:50, y:50}, 700);
+          return (
+            <g>
+              <polygon
+                fill="#000"
+                points={polygonPoints[0]}
+              />
+              <polygon
+                fill="000"
+                points={polygonPoints[1]}
+              />
+            </g>
+          );
+        default:
+          break;
+      }
+    }
+      return;
+  }
 
   render() {
     if (!this.state.type) {
@@ -331,6 +368,7 @@ class Tile extends Component {
         {this.renderSideIndicator()}
         {this.renderMoves()}
         {this.renderTitle()}
+        {this.renderHighlight()}
       </svg>
     );
   }
