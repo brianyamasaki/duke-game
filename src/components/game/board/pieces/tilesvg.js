@@ -306,10 +306,12 @@ class Tile extends Component {
             <g>
               <polygon
                 fill="#000"
+                fillOpacity="0.6"
                 points={polygonPoints[0]}
               />
               <polygon
                 fill="000"
+                fillOpacity="0.6"
                 points={polygonPoints[1]}
               />
             </g>

@@ -92,6 +92,15 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
         );
         break;
       case RULETYPE_COMMAND:
+        highlights = highlights.concat(
+          spacesFromRowColRules(
+            players,
+            iSpace,
+            ruleSet[key],
+            iPlayer,
+            key
+          )
+        );
         break;
       case 'type':
         console.log('Reading rule for tile type ' + ruleSet[key]);
@@ -149,16 +158,28 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
     if (!denyTile) {
       const iSpace = rowColToIndex(rowFromRule, colFromRule);
       const tileInfo = isTileOnSpace(players, iSpace);
+
       if (!tileInfo) {
+        // highlighting of empty spaces
+        if (ruleType === RULETYPE_COMMAND) {
+          // don't highlight empty spaces specified by COMMAND rules
+          return;
+        }
         return {
           iSpace,
           type: highlightTypes[ruleType]
         };
-      } else if (tileInfo.iPlayer !== iPlayer) {
+      } else {
+        let highlight;
+        if (tileInfo.iPlayer !== iPlayer) {
+          highlight = ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE;
+        } else if (ruleType === RULETYPE_COMMAND) {
+          highlight = HIGHLIGHT_COMMAND;
+        }
         return {
           iSpace,
-          type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
-        }
+          type: highlight
+        };
       }
     }
   } 
