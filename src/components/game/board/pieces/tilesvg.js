@@ -18,10 +18,13 @@ import {
 } from '../../../../cards/cardConstants';
 import {
   HIGHLIGHT_COMMAND,
-  HIGHLIGHT_CAPTURE_STRIKE
+  HIGHLIGHT_CAPTURE_STRIKE,
+  HIGHLIGHT_CAPTURE
 } from '../../../../constants';
 import { movesFromTiletype, nameFromTiletype } from '../../../../cards/cardHelpers';
 import { strikeIconPoints } from '../../../game/shapes/strikeStar';
+import CaptureIcon from '../../../../icons/capture-icon';
+import CommandIcon from '../../../../icons/command-icon';
 import { 
   upArrow,
   leftArrow,
@@ -32,10 +35,6 @@ import {
   downLeftArrow,
   downRightArrow
 } from '../../../game/shapes/slidePolygons';
-
-import { 
- commandPolygons
-} from '../../../game/shapes/commandPolygons';
 
 import './tile.css';
 
@@ -203,20 +202,7 @@ class Tile extends Component {
           />
         );
       case RULETYPE_COMMAND:
-        const polygonPoints = commandPolygons(ruleMarker, 100);
-        return (
-          <g key={i}>
-            <polygon
-              fill="#000"
-              points={polygonPoints[0]}
-            />
-            <polygon
-              fill="000"
-              points={polygonPoints[1]}
-            />
-          </g>
-        )
-
+        return <CommandIcon center={ruleMarker} maxWidth={100} />;
       default:
         window.alert('No support for rules of type ' + ruleMarker.ruleType);
         break;
@@ -301,21 +287,9 @@ class Tile extends Component {
           />
         );
         case HIGHLIGHT_COMMAND:
-          const polygonPoints = commandPolygons({x:50, y:50}, 700);
-          return (
-            <g>
-              <polygon
-                fill="#000"
-                fillOpacity="0.6"
-                points={polygonPoints[0]}
-              />
-              <polygon
-                fill="000"
-                fillOpacity="0.6"
-                points={polygonPoints[1]}
-              />
-            </g>
-          );
+          return <CommandIcon center={{x: 350, y: 350}} maxWidth={700} />;
+        case HIGHLIGHT_CAPTURE:
+          return <CaptureIcon center={{ x: 350, y: 350 }} maxWidth={700} />;
         default:
           break;
       }
