@@ -41,8 +41,13 @@ class GameOverModal extends Component {
 
   render() {
     return (
-      <Modal show={this.state.show}>
-        <Modal.Title className='text-center'>The Duke</Modal.Title>
+      <Modal 
+        show={this.state.show}
+        onHide={() => this.setState({ show: false })}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className='text-center'>The Duke</Modal.Title>
+        </Modal.Header>
         <Modal.Body className='text-center'>{this.state.message}</Modal.Body>
         <Modal.Footer><Button bsStyle='primary' onClick={this.restartGame}>Start a New Game</Button></Modal.Footer>
       </Modal>
