@@ -175,6 +175,8 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
           highlight = ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE;
         } else if (ruleType === RULETYPE_COMMAND) {
           highlight = HIGHLIGHT_COMMAND;
+        } else {
+          return;
         }
         return {
           iSpace,

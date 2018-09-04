@@ -35,7 +35,7 @@ class SpacesOnBoard extends Component {
       boardWidth, 
       boardState, 
       otherPlayerPlaceDuke,
-      gameDebugState
+      gameDebugMode
     } = this.props;
     if (prevProps.boardWidth !== boardWidth) {
       this.setState({ boardWidth });
@@ -44,7 +44,7 @@ class SpacesOnBoard extends Component {
     if (prevProps.boardState.gameState !== boardState &&
     boardState.gameState === GAME_SELECT_OR_DRAW) {
       const otherPlayerIndex = boardState.currentPlayer ? 0 : 1;
-      if (!gameDebugState && 
+      if (!gameDebugMode && 
         boardState.players[otherPlayerIndex].tilesInBag.find(tileInfo => tileInfo.type === 'duke')) {
         otherPlayerPlaceDuke();
       }
@@ -136,7 +136,7 @@ const mapStateToProps = state => {
   return {
     tiledSpaces: tiledSpaces(state),
     boardState,
-    gameDebugState: boardState.gameDebugState
+    gameDebugMode: boardState.gameDebugMode
   };
 };
 
