@@ -21,7 +21,8 @@ import {
   HINT_MOVE_TILE
 } from '../strings';
 
-export const SPACES_INIT = 'SPACES_INIT';
+export const BOARD_INIT = 'BOARD_INIT';
+export const GAME_WAIT_START = 'GAME_WAIT_START';
 export const GAME_CHOOSE_DUKE_POSITION = 'GAME_CHOOSE_DUKE_POSITION';
 export const GAME_DUKE_PLACED = 'GAME_DUKE_PLACED';
 export const GAME_CHOOSE_FOOTMAN1_POSITION = 'GAME_CHOOSE_FOOTMAN1_POSITION';
@@ -143,23 +144,32 @@ const placeTileFromBagOnBoard = (player, iPlayer, tileType, iSpace) => {
 export default (state = initialState, action) => {
   let playersClone;
   switch (action.type) {
-    case SPACES_INIT:
+    case BOARD_INIT:
       return {
         ...state,
         spaces: spacesNew(),
-        highlighted: dukePlacement(state.currentPlayer),
-        gameState: GAME_CHOOSE_DUKE_POSITION,
-        uiHint: HINT_PLACE_DUKE
+        gameState: GAME_WAIT_START
       }
     case PLAYERS_INIT:
+      playersClone = state.players.map((player, i) => {
+        const playerClone = cloneObject(player);
+        playerClone.name = action.payload.names[i];
+        playerClone.tilesInBag = shuffleDeck();
+        return playerClone;
+      })
+      if (state.gameDebugMode) {
+        return {
+          ...state,
+          players: playersClone,
+          gameState: GAME_SELECT_OR_DRAW
+        }
+      }
       return {
         ...state,
-        players: state.players.map((player, i) => {
-          const playerClone = cloneObject(player);
-          playerClone.name = action.payload.names[i];
-          playerClone.tilesInBag = shuffleDeck();
-          return playerClone;
-        })
+        players: playersClone,
+        gameState: GAME_CHOOSE_DUKE_POSITION,
+        highlighted: dukePlacement(0),
+        uiHint: HINT_PLACE_DUKE
       }
     case GAME_SWAP_PLAYERS:
       return {
@@ -171,6 +181,11 @@ export default (state = initialState, action) => {
         ...state,
         gameDebugMode: action.payload
       };
+    case GAME_CHOOSE_DUKE_POSITION:
+      return {
+        ...state,
+        highlighted: dukePlacement(state.currentPlayer)
+      }
     case GAME_DUKE_PLACED:
       playersClone = cloneAndModifyPlayers(
         state.players, 
@@ -332,10 +347,10 @@ const randomTileFromBag = (player) => {
   return player.tilesInBag[0].type;
 }
 
-// initialize the spaces array
-export const spacesInit = () => {
+// initialize the board and players
+export const boardInit = () => {
   return {
-    type: SPACES_INIT
+    type: BOARD_INIT
   };
 }
 

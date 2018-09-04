@@ -9,6 +9,7 @@
   align-content: center;
   transform: rotate(0deg);
   transition: transform 2s ease-in-out;
+  margin: 20px 0;
   &.playerOther {
     transform: rotate(180deg);
   }

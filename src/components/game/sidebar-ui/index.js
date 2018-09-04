@@ -6,9 +6,11 @@ import TileSvg from '../../game/board/pieces/tilesvg';
 import packageJson from '../../../../package.json';
 import { 
   GAME_SELECT_OR_DRAW, 
+  GAME_WAIT_START,
   setDebugMode, 
   selectTileInBag,
-  swapPlayers
+  swapPlayers,
+  playersInit
 } from '../../../modules/boardState';
 
 import {
@@ -39,6 +41,9 @@ class SidebarUi extends Component {
     }
     if (prevProps.selectedTile !== selectedTile) {
       this.setState({ selectedTile });
+    }
+    if (prevProps.uiHint !== uiHint) {
+      this.setState({ uiHint });
     }
   }
 
@@ -106,7 +111,11 @@ class SidebarUi extends Component {
     const { gameState, swapPlayers } = this.props;
 
     if (gameState === GAME_SELECT_OR_DRAW)
-      return <Button bsStyle='default' onClick={swapPlayers}>End of Turn</Button>
+      return (
+        <div className='buttonZone'>
+          <Button bsStyle='default' onClick={swapPlayers}>End of Turn</Button>
+        </div>
+      );
   }
 
   renderHint = (i) => {
@@ -115,6 +124,19 @@ class SidebarUi extends Component {
         <p>{this.state.uiHint}</p>
       );
     }
+  }
+
+  renderPlayers() {
+    const { players, gameState, playersInit } = this.props;
+
+    if (gameState === GAME_WAIT_START) {
+      return (
+        <div className='buttonZone'>
+          <Button bsStyle='primary' onClick={() => playersInit()}>Start Game</Button>
+        </div>
+      );
+    }
+    return players.map(this.renderPlayer);
   }
 
   renderPlayer = (player, i) => {
@@ -130,15 +152,17 @@ class SidebarUi extends Component {
   }
 
   renderDebugControl = () => {
-    const { gameDebugMode, setDebugMode } = this.props;
+    const { setDebugMode } = this.props;
+    const { gameDebugMode } = this.state;
     return (
       <div>
         <label htmlFor="debugMode">Debug Mode</label>&nbsp;
-        <input id="debugMode" type="checkbox" value={this.state.gameDebugMode} onClick={() => setDebugMode(!gameDebugMode)} />
+        <input id="debugMode" type="checkbox" checked={gameDebugMode} onClick={() => setDebugMode(!gameDebugMode)} />
       </div>
     )
   }
 
+  // use to debug how tiles look, but not used in the game
   renderTileSvg = () => {
     return allTiletypes().map((tile, i) => (
       <div key={i} >
@@ -150,11 +174,9 @@ class SidebarUi extends Component {
   }
 
   render() {
-    const { players } = this.props;
-
     return (
       <div className='sidebar-ui text-center'>
-        {players.map(this.renderPlayer)} 
+        {this.renderPlayers()} 
         {this.renderEndOfTurn()}
         {this.renderDebugControl()}
         <p className='smallFont'>Version {packageJson.version}</p>
@@ -187,5 +209,6 @@ const mapStateToProps = ({ boardState }) => {
 export default connect(mapStateToProps, {
   setDebugMode,
   selectTileInBag,
-  swapPlayers
+  swapPlayers,
+  playersInit
 })(SidebarUi);

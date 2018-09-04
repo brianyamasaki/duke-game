@@ -1,11 +1,14 @@
 .sidebar-ui {
-  border: solid black 1px;
-  padding: 0 8px;
-  background: white;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.8);
+  margin: 20px 0;
   .playerDiv {
     min-height: 80px;
   }
   .smallFont {
     font-size: 10px;
+  }
+  .buttonZone {
+    padding: 20px;
   }
 }

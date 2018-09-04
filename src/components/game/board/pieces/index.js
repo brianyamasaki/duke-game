@@ -8,7 +8,7 @@ import {
   HIGHLIGHT_CAPTURE_STRIKE
 } from '../../../../constants';
 import { 
-  spacesInit, 
+  boardInit, 
   spaceClicked, 
   GAME_SELECT_OR_DRAW, 
   playersInit, 
@@ -27,12 +27,16 @@ class SpacesOnBoard extends Component {
   }
 
   componentDidMount() {
-    this.props.spacesInit();
-    this.props.playersInit();
+    this.props.boardInit();
   }
 
   componentDidUpdate(prevProps) {
-    const { boardWidth, boardState, otherPlayerPlaceDuke } = this.props;
+    const { 
+      boardWidth, 
+      boardState, 
+      otherPlayerPlaceDuke,
+      gameDebugState
+    } = this.props;
     if (prevProps.boardWidth !== boardWidth) {
       this.setState({ boardWidth });
     }
@@ -40,7 +44,8 @@ class SpacesOnBoard extends Component {
     if (prevProps.boardState.gameState !== boardState &&
     boardState.gameState === GAME_SELECT_OR_DRAW) {
       const otherPlayerIndex = boardState.currentPlayer ? 0 : 1;
-      if (boardState.players[otherPlayerIndex].tilesInBag.find(tileInfo => tileInfo.type === 'duke')) {
+      if (!gameDebugState && 
+        boardState.players[otherPlayerIndex].tilesInBag.find(tileInfo => tileInfo.type === 'duke')) {
         otherPlayerPlaceDuke();
       }
     }
@@ -130,12 +135,13 @@ const mapStateToProps = state => {
   const { boardState } = state;
   return {
     tiledSpaces: tiledSpaces(state),
-    boardState
+    boardState,
+    gameDebugState: boardState.gameDebugState
   };
 };
 
 export default connect(mapStateToProps, {
-  spacesInit,
+  boardInit,
   spaceClicked,
   playersInit,
   cancelSelection,

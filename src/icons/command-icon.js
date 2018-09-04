@@ -26,11 +26,13 @@ const CommandIcon = ({ center, maxWidth }) => {
   return (
     <g>
       <polygon
+        key={1}
         fill="#000"
         fillOpacity="0.6"
         points={points}
       />
       <polygon
+        key={2}
         fill="000"
         fillOpacity="0.6"
         points={points2}
