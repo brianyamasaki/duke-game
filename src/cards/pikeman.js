@@ -2,6 +2,8 @@ import { TILE_PIKEMAN } from './cardConstants';
 
 export const pikemanMoves = {
   type: TILE_PIKEMAN,
+  name: 'Pikeman',
+  countInBag: 3,
   odd: {
     move: [
       { row: -2, col: -2, denyMoveSpaces: [{ row: -1, col: -1 }] },

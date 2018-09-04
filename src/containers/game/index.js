@@ -15,7 +15,6 @@ class GamePage extends Component {
   }
 
   render() {
-    console.log(this.props.match);
     return (
       <div className='gamePage'>
         <Game />

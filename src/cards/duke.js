@@ -1,5 +1,6 @@
 import { 
   TILE_DUKE,
+  HIGHLIGHTS_DUKES_FOOTMEN,
   SLIDE_DOWN, 
   SLIDE_UP, 
   SLIDE_LEFT, 
@@ -8,6 +9,8 @@ import {
 
 export const dukeMoves = {
   type: TILE_DUKE,
+  name: 'Duke',
+  countInBag: 1,
   odd: {
     slide: [
       SLIDE_LEFT,
@@ -23,6 +26,9 @@ export const dukeMoves = {
 };
 
 export const dukeFootmen = {
+  type: HIGHLIGHTS_DUKES_FOOTMEN,
+  name: '',
+  countInBag: 0, // this is not a real tile
   odd: {
     move: [
      { row: -1, col: 0 },

@@ -6,6 +6,8 @@ import {
 
 export const marshallMoves = {
   type: TILE_MARSHALL,
+  name: 'Marshall',
+  countInBag: 1,
   odd: {
     jump: [
       { row: -2, col: -2 },

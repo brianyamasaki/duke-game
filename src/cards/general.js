@@ -4,6 +4,8 @@ import {
 
 export const generalMoves = {
   type: TILE_GENERAL,
+  name: 'General',
+  countInBag: 1,
   odd: {
     move: [
       { row: -1, col: 0 },

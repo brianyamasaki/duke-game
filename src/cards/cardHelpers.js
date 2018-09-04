@@ -1,17 +1,4 @@
-import { 
-  TILE_DUKE,
-  TILE_FOOTMAN,
-  TILE_KNIGHT,
-  TILE_PRIEST,
-  TILE_SEER,
-  TILE_RANGER,
-  TILE_PIKEMAN,
-  TILE_LONGBOWMAN,
-  TILE_GENERAL,
-  TILE_MARSHALL,
-  HIGHLIGHTS_DUKES_FOOTMEN
-} from './cardConstants';
-
+// import moves from each file
 import { dukeMoves, dukeFootmen } from './duke';
 import { footmanMoves } from './footman';
 import { knightMoves } from './knight';
@@ -23,52 +10,29 @@ import { longbowmanMoves } from './longbowman';
 import { generalMoves } from './general';
 import { marshallMoves } from './marshall';
 
-const mpTiletypeInfo = {
-  [HIGHLIGHTS_DUKES_FOOTMEN]: {
-    moves: dukeFootmen,
-    name: 'Duke'
-  },
-  [TILE_DUKE]: {
-    moves: dukeMoves,
-    name: 'Duke'
-  },
-  [TILE_FOOTMAN]: {
-    moves: footmanMoves,
-    name: 'Footman'
-  },
-  [TILE_KNIGHT]: {
-    moves: knightMoves,
-    name: 'Knight'
-  },
-  [TILE_PRIEST]: {
-    moves: priestMoves,
-    name: 'Priest'
-  },
-  [TILE_SEER]: {
-    moves: seerMoves,
-    name: 'Seer'
-  },
-  [TILE_RANGER]: {
-    moves: rangerMoves,
-    name: 'Ranger'
-  },
-  [TILE_PIKEMAN]: {
-    moves: pikemanMoves,
-    name: 'Pikeman'
-  },
-  [TILE_LONGBOWMAN]: {
-    moves: longbowmanMoves,
-    name: 'Longbowman'
-  },
-  [TILE_GENERAL]: {
-    moves: generalMoves,
-    name: 'General'
-  },
-  [TILE_MARSHALL]: {
-    moves: marshallMoves,
-    name: 'Marshall'
-  }
-};
+// insert all moves into this array
+const moves = [
+  dukeMoves,
+  dukeFootmen,
+  footmanMoves,
+  knightMoves,
+  priestMoves,
+  seerMoves,
+  rangerMoves,
+  pikemanMoves,
+  longbowmanMoves,
+  generalMoves,
+  marshallMoves
+];
+
+const mpTiletypeInfo = {};
+
+// This code creates an object with all moves
+moves.forEach(moves => mpTiletypeInfo[moves.type] = {
+  moves,
+  name: moves.name,
+  countInBag: moves.countInBag
+});
 
 export function movesFromTiletype(tileType) {
   return mpTiletypeInfo[tileType].moves;
@@ -79,3 +43,14 @@ export const allTiletypes = () => {
 }
 
 export const nameFromTiletype = (tileType) => mpTiletypeInfo[tileType].name;
+
+export const deckContains = () => {
+  const contents = [];
+  for(let tileType in mpTiletypeInfo) {
+    contents.push({
+      type: tileType,
+      count: mpTiletypeInfo[tileType].countInBag
+    });
+  }
+  return contents;
+}

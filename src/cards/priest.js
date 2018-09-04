@@ -8,6 +8,8 @@ import {
 
 export const priestMoves = {
   type: TILE_PRIEST,
+  name: 'Priest',
+  countInBag: 1,
   odd: {
     slide: [
       SLIDE_DIAG_UP_LEFT, 

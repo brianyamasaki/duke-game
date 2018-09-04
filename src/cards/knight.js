@@ -2,6 +2,8 @@ import { TILE_KNIGHT, SLIDE_UP } from './cardConstants';
 
 export const knightMoves = {
   type: TILE_KNIGHT,
+  name: 'Knight',
+  countInBag: 1,
   odd: {
     move: [
       { row: 0, col: -1 },

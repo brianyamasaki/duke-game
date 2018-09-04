@@ -1,15 +1,6 @@
-import { 
-  TILE_DUKE,
-  TILE_FOOTMAN,
-  TILE_KNIGHT,
-  TILE_PRIEST,
-  TILE_SEER,
-  TILE_PIKEMAN,
-  TILE_RANGER,
-  TILE_LONGBOWMAN,
-  TILE_GENERAL,
-  TILE_MARSHALL
-} from './cardConstants';
+import {
+  deckContains
+} from './cardHelpers';
 
 const createCard = type => {
   return {
@@ -19,21 +10,9 @@ const createCard = type => {
   }
 }
 
-const deckContents = [
-  { type: TILE_DUKE, count: 1},
-  { type: TILE_FOOTMAN, count: 3 },
-  { type: TILE_KNIGHT, count: 1 },
-  { type: TILE_SEER, count: 1 },
-  { type: TILE_PRIEST, count: 1 },
-  { type: TILE_PIKEMAN, count: 3 },
-  { type: TILE_RANGER, count: 1 },
-  { type: TILE_LONGBOWMAN, count: 1},
-  { type: TILE_GENERAL, count: 1},
-  { type: TILE_MARSHALL, count: 1}
-];
-
 export const shuffleDeck = () => {
   const deck = [];
+  const deckContents = deckContains();
 
   deckContents.forEach(countType => {
     for (let i = 0; i < countType.count; i++ ) {

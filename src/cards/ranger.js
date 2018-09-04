@@ -8,6 +8,8 @@ import {
 
 export const rangerMoves = {
   type: TILE_RANGER,
+  name: 'Ranger',
+  countInBag: 1,
   odd: {
     jump: [
       { row: -2, col: -1 },

@@ -2,6 +2,8 @@ import { TILE_SEER } from './cardConstants';
 
 export const seerMoves = {
   type: TILE_SEER,
+  name: 'Seer',
+  countInBag: 1,
   odd: {
     move: [
       { row: -1, col: -1},
