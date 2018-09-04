@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Modal } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Modal, Button } from 'react-bootstrap';
+import { boardInit } from '../../../modules/boardState';
 
 class GameOverModal extends Component {
   state = {
@@ -29,14 +31,25 @@ class GameOverModal extends Component {
     }
   }
 
+  restartGame = () => {
+    this.setState({
+      show: false,
+      message: ''
+    });
+    this.props.boardInit();
+  }
+
   render() {
     return (
-      <Modal.Dialog show={this.state.show}>
+      <Modal show={this.state.show}>
         <Modal.Title className='text-center'>The Duke</Modal.Title>
-        <Modal.Body>{this.state.message}</Modal.Body>
-      </Modal.Dialog>
+        <Modal.Body className='text-center'>{this.state.message}</Modal.Body>
+        <Modal.Footer><Button bsStyle='primary' onClick={this.restartGame}>Start a New Game</Button></Modal.Footer>
+      </Modal>
     );
   }
 }
 
-export default GameOverModal;
+export default connect(null, {
+  boardInit
+})(GameOverModal);

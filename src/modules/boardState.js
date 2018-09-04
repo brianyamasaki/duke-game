@@ -148,7 +148,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         spaces: spacesNew(),
-        gameState: GAME_WAIT_START
+        gameState: GAME_WAIT_START,
+        players: [playerDft, playerDft],
+        currentPlayer: 0
       }
     case PLAYERS_INIT:
       playersClone = state.players.map((player, i) => {
