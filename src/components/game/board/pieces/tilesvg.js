@@ -23,18 +23,11 @@ import {
 } from '../../../../constants';
 import { movesFromTiletype, nameFromTiletype } from '../../../../cards/cardHelpers';
 import { strikeIconPoints } from '../../../game/shapes/strikeStar';
-import CaptureIcon from '../../../../icons/capture-icon';
-import CommandIcon from '../../../../icons/command-icon';
 import { 
-  upArrow,
-  leftArrow,
-  rightArrow,
-  downArrow,
-  upLeftArrow,
-  upRightArrow,
-  downLeftArrow,
-  downRightArrow
-} from '../../../game/shapes/slidePolygons';
+  CaptureIcon,
+  CommandIcon,
+  SlideIcon 
+} from '../../../../icons';
 
 import './tile.css';
 
@@ -47,17 +40,6 @@ const mpSlideTypePos = {
   [SLIDE_DIAG_UP_RIGHT]: { row: -1, col: 1 },
   [SLIDE_DIAG_DOWN_LEFT]: { row: 1, col: -1 },
   [SLIDE_DIAG_DOWN_RIGHT]: { row: 1, col: 1 }
-};
-
-const mpSlideTypePolygonOffsets = {
-  [SLIDE_UP]: upArrow,
-  [SLIDE_DOWN]: downArrow,
-  [SLIDE_LEFT]: leftArrow,
-  [SLIDE_RIGHT]: rightArrow,
-  [SLIDE_DIAG_UP_LEFT]: upLeftArrow,
-  [SLIDE_DIAG_UP_RIGHT]: upRightArrow,
-  [SLIDE_DIAG_DOWN_LEFT]: downLeftArrow,
-  [SLIDE_DIAG_DOWN_RIGHT]: downRightArrow
 };
 
 const ruleMarkersFromTiletype = (tileType, isOdd) => {
@@ -140,7 +122,6 @@ class Tile extends Component {
   }
 
   renderRuleMarker = (ruleMarker, i) => {
-    let points;
     switch(ruleMarker.ruleType) {
       case RULETYPE_MOVE:
         return (
@@ -179,28 +160,8 @@ class Tile extends Component {
     
         );
       case RULETYPE_SLIDE:
-      // case RULETYPE_JUMPSLIDE:
-        points = mpSlideTypePolygonOffsets[ruleMarker.slideType].map(offset => 
-          `${ruleMarker.x + offset.x},${ruleMarker.y + offset.y}`
-        );
-        if (ruleMarker.ruleType === RULETYPE_SLIDE) {
-          return (
-            <polygon
-              fill="000"
-              points={points.join(' ')}
-              key={i}
-            />
-          );
-        }
-        return (
-          <polygon
-            fill="none"
-            stroke="#000"
-            strokeWidth="8"
-            points={points.join(' ')}
-            key={i}
-          />
-        );
+      case RULETYPE_JUMPSLIDE:
+        return <SlideIcon center={ruleMarker} maxWidth={100} slideType={ruleMarker.slideType} />;
       case RULETYPE_COMMAND:
         return <CommandIcon center={ruleMarker} maxWidth={100} />;
       default:

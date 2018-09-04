@@ -31,4 +31,4 @@ const CaptureIcon = ({ center, maxWidth}) => {
   )
 }
 
-export default CaptureIcon;
+export { CaptureIcon };

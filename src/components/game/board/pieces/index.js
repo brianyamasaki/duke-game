@@ -16,8 +16,7 @@ import {
   otherPlayerPlaceDuke,
 } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
-import StrikeIcon from '../../../../icons/strike-icon';
-import CaptureIcon from '../../../../icons/capture-icon';
+import { CaptureIcon, StrikeIcon } from '../../../../icons';
 
 import './index.css';
 

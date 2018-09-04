@@ -10,4 +10,4 @@ const StrikeIcon = () => (
   </svg>
 );
 
-export default StrikeIcon;
+export { StrikeIcon };

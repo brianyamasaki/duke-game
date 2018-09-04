@@ -41,4 +41,4 @@ const CommandIcon = ({ center, maxWidth }) => {
   )
 }
 
-export default CommandIcon;
+export { CommandIcon };
