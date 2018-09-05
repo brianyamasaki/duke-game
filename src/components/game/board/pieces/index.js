@@ -34,14 +34,15 @@ class SpacesOnBoard extends Component {
       boardWidth, 
       boardState, 
       otherPlayerPlaceDuke,
-      gameDebugMode
+      gameDebugMode,
+      gameState
     } = this.props;
     if (prevProps.boardWidth !== boardWidth) {
       this.setState({ boardWidth });
     }
     // check if the other player has a Duke in his bag, if so, swap players
-    if (prevProps.boardState.gameState !== boardState &&
-    boardState.gameState === GAME_SELECT_OR_DRAW) {
+    if (prevProps.gameState !== gameState &&
+    gameState === GAME_SELECT_OR_DRAW) {
       const otherPlayerIndex = boardState.currentPlayer ? 0 : 1;
       if (!gameDebugMode && 
         boardState.players[otherPlayerIndex].tilesInBag.find(tileInfo => tileInfo.type === 'duke')) {
@@ -77,15 +78,15 @@ class SpacesOnBoard extends Component {
   }
 
   renderSpace = (space, i) => {
-    const { boardWidth, boardState, cancelSelection } = this.props;
+    const { boardWidth, boardState, cancelSelection, selectedTileStack, gameState } = this.props;
     const height = `${Math.floor(boardWidth / BOARD_SPACE_DIVISOR)}px`;
     const style = {
       height,
       width: height
     };
     const highlight = boardState.highlighted.find(item => item.iSpace === i);
-    const isSelected = boardState.selected.indexOf(i) !== -1;
-    const isTileSelectable = space.type && boardState.gameState === GAME_SELECT_OR_DRAW;
+    const isSelected = selectedTileStack.findIndex(selectedTile => selectedTile.iSpace === i) !== -1;
+    const isTileSelectable = space.type && gameState === GAME_SELECT_OR_DRAW;
     const classes = ['space'];
     if (highlight) {
       classes.push('highlight');
@@ -135,7 +136,9 @@ const mapStateToProps = state => {
   return {
     tiledSpaces: tiledSpaces(state),
     boardState,
-    gameDebugMode: boardState.gameDebugMode
+    gameDebugMode: boardState.gameDebugMode,
+    gameState: boardState.gameState,
+    selectedTileStack: boardState.selectedTileStack
   };
 };
 

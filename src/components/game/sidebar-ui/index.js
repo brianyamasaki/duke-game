@@ -192,8 +192,13 @@ const mapStateToProps = ({ boardState }) => {
     currentPlayer,
     uiHint,
     gameDebugMode,
-    selectedTile
+    selectedTileStack
   } = boardState;
+  const selectedTile = selectedTileStack.length > 0 ? 
+      selectedTileStack[selectedTileStack.length - 1] : 
+      {
+        tileType: ''
+      };
   return {
     gameState,
     players,

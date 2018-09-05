@@ -46,17 +46,12 @@ const playerDft = {
 
 const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
 const SELECTED_TILE_ON_BOARD = 'SELECTED_TILE_ON_BOARD';
-const selectedTileDft = {
-  tileType: '',
-  selectionType: undefined
-}
 
 const initialState = {
   spaces: [],
-  selected: [],
+  selectedTileStack: [],
   highlighted: [],
   gameState: '',
-  selectedTile: selectedTileDft,
   currentPlayer: 0,
   players: [playerDft, playerDft],
   uiHint: '',
@@ -260,8 +255,7 @@ export default (state = initialState, action) => {
         ...state,
         gameState: GAME_SELECT_OR_DRAW,
         highlighted: [],
-        selected: [],
-        selectedTile: selectedTileDft,
+        selectedTileStack: [],
         uiHint: HINT_SELECT_OR_DRAW
       };
     case GAME_TILE_SELECTED:
@@ -275,26 +269,27 @@ export default (state = initialState, action) => {
           state.currentPlayer
         ),
         gameState: GAME_TILE_SELECTED,
-        selected: [action.payload.iSpace],
-        uiHint: action.payload.uiHint,
-        selectedTile: {
+        selectedTileStack: [{
+          iSpace: action.payload.iSpace,
           tileType: action.payload.tileType,
           selectionType: SELECTED_TILE_ON_BOARD
-        }
+        }],
+        uiHint: action.payload.uiHint,
       }
     case GAME_TILE_MOVE:
       return {
         ...state,
         highlighted: [],
-        selected: [],
+        selectedTileStack: [],
         players: cloneAndModifyPlayers(
           state.players,
           state.currentPlayer,
           (players) => {
             const player = players[state.currentPlayer];
-            if (state.selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
+            const selectedTile = state.selectedTileStack[state.selectedTileStack.length - 1];
+            if (selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
               // move tile currently on the board
-              const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === state.selected[0]);
+              const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === selectedTile.iSpace);
               if (tileSelected) {
                 if (action.payload.highlightType === HIGHLIGHT_CAPTURE) {
                   // remove captured tile off of board
@@ -313,12 +308,11 @@ export default (state = initialState, action) => {
                 tileSelected.iPlayer = state.currentPlayer;
               }
             } else {
-              placeTileFromBagOnBoard(player, state.currentPlayer, state.selectedTile.tileType, action.payload.iSpace);
+              placeTileFromBagOnBoard(player, state.currentPlayer, selectedTile.tileType, action.payload.iSpace);
             }
           }
         ),
-        gameState: GAME_SELECT_OR_DRAW,
-        selectedTile: selectedTileDft
+        gameState: GAME_SELECT_OR_DRAW
       }
     case GAME_SELECT_TILE_IN_BAG:
       const highlighted = state.gameDebugMode ? 
@@ -334,11 +328,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         gameState: GAME_TILE_MOVE,
-        selectedTile: {
-          selectionType: SELECTED_TILE_IN_BAG,
+        highlighted,
+        selectedTileStack: [{
+          iSpace: -1,
+          highlightType: SELECTED_TILE_IN_BAG,
           tileType
-        },
-        highlighted
+        }]
       }
     default:
       return state
