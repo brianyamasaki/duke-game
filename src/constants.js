@@ -13,5 +13,8 @@ export const HIGHLIGHT_COMMAND = 'HIGHLIGHT_COMMAND';
 export const HIGHLIGHT_CAPTURE = 'HIGHLIGHT_CAPTURE'; // highlights for capturing a tile that would move the tile
 export const HIGHLIGHT_CAPTURE_STRIKE = 'HIGHLIGHT_CAPTURE_STRIKE'; // highlights for capturing a tile that would not move the tile
 
+export const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
+export const SELECTED_TILE_ON_BOARD = 'SELECTED_TILE_ON_BOARD';
+
 export const PLAYER_ZERO_WINS = 'Player One Wins';
 export const PLAYER_ONE_WINS = 'Player Two Wins';

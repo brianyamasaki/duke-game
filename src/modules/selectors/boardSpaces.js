@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { spacesNew } from '../boardState';
+import { spacesNew } from '../../shared/boardUtilities';
 
 const spaces = (state) => state.boardState.spaces;
 const players = (state) => state.boardState.players;

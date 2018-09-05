@@ -1,9 +1,7 @@
 import { 
-  BOARD_ROW_COUNT, 
-  BOARD_COL_COUNT,
-  HIGHLIGHT_MOVE,
-  HIGHLIGHT_CAPTURE,
-  HIGHLIGHT_CAPTURE_STRIKE
+  HIGHLIGHT_COMMAND,
+  SELECTED_TILE_IN_BAG,
+  SELECTED_TILE_ON_BOARD
 } from '../constants';
 import { 
   shuffleDeck,
@@ -20,6 +18,15 @@ import {
   HINT_PLACE_SECOND_FOOTMAN,
   HINT_MOVE_TILE
 } from '../strings';
+import {
+  dukeIndex,
+  moveTileHelper,
+  placeTileFromBagOnBoard,
+  spacesNew,
+  debugHighlights,
+  dukePlacement,
+  randomTileFromBag
+} from '../shared/boardUtilities';
 
 export const BOARD_INIT = 'BOARD_INIT';
 export const GAME_WAIT_START = 'GAME_WAIT_START';
@@ -30,6 +37,7 @@ export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
 export const GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION = 'GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
+export const GAME_TILE_SELECTED_COMMAND_MOVE = 'GAME_TILE_SELECTED_COMMAND_MOVE';
 export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
 export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
 export const GAME_SWAP_PLAYERS = 'GAME_SWAP_PLAYERS';
@@ -43,9 +51,6 @@ const playerDft = {
   tilesOnBoard: [],
   tilesCaptured: []
 };
-
-const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
-const SELECTED_TILE_ON_BOARD = 'SELECTED_TILE_ON_BOARD';
 
 const initialState = {
   spaces: [],
@@ -65,75 +70,11 @@ const cloneAndModifyPlayers = (players, iPlayer, fn) => {
   return playersCopy;
 }
 
-export const spacesNew = () => {
-  const spaces = []; 
-  for (let i = 0; i < BOARD_COL_COUNT * BOARD_ROW_COUNT; i++) {
-    spaces.push({});
-  }
-  return spaces;
-}
-
-// find the index of the space the Duke is on
-const dukeIndex = (tilesOnBoard) => {
-  const dukeTileInfo = tilesOnBoard.find(tileInfo =>(tileInfo.type === TILE_DUKE));
-  return dukeTileInfo.iSpace;
-}
-
-const dukePlacement = iPlayer => {
-  if (iPlayer === 0) {
-    return [
-      {
-        iSpace: 32,
-        type: HIGHLIGHT_MOVE
-      },
-      {
-        iSpace: 33,
-        type: HIGHLIGHT_MOVE
-      }
-    ];
-  }
-  return [
-    {
-      iSpace: 2,
-      type: HIGHLIGHT_MOVE
-    },
-    {
-      iSpace: 3,
-      type: HIGHLIGHT_MOVE
-    }
-  ];
-}
-
-const debugHighlights = () => {
-  const highlights = [];
-  for (let i = 0; i < BOARD_COL_COUNT * BOARD_ROW_COUNT; i++) {
-    highlights.push({
-      type: HIGHLIGHT_MOVE,
-      iSpace: i
-    });
-  }
-  return highlights;
-}
-
 export const setDebugMode = (mode) => {
   return {
     type: GAME_DEBUG_MODE,
     payload: mode
   };
-}
-
-// place tile from bag onto the board
-const placeTileFromBagOnBoard = (player, iPlayer, tileType, iSpace) => {
-  if (tileType) {
-    const tileIndex = player.tilesInBag.findIndex(tileInfo => tileInfo.type === tileType);
-    if (tileIndex !== -1) {
-      const tiles = player.tilesInBag.splice(tileIndex, 1);
-      tiles[0].iSpace = iSpace;
-      tiles[0].moves = 1;
-      tiles[0].iPlayer = iPlayer;
-      player.tilesOnBoard = player.tilesOnBoard.concat(tiles);
-    }
-  } 
 }
 
 export default (state = initialState, action) => {
@@ -269,47 +210,23 @@ export default (state = initialState, action) => {
           state.currentPlayer
         ),
         gameState: GAME_TILE_SELECTED,
-        selectedTileStack: [{
+        selectedTileStack: state.selectedTileStack.concat({
           iSpace: action.payload.iSpace,
           tileType: action.payload.tileType,
           selectionType: SELECTED_TILE_ON_BOARD
-        }],
+        }),
         uiHint: action.payload.uiHint,
       }
     case GAME_TILE_MOVE:
       return {
         ...state,
         highlighted: [],
-        selectedTileStack: [],
+        selectedTileStack: state.selectedTileStack.slice(0, state.selectedTileStack.length - 1),
         players: cloneAndModifyPlayers(
           state.players,
           state.currentPlayer,
           (players) => {
-            const player = players[state.currentPlayer];
-            const selectedTile = state.selectedTileStack[state.selectedTileStack.length - 1];
-            if (selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
-              // move tile currently on the board
-              const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === selectedTile.iSpace);
-              if (tileSelected) {
-                if (action.payload.highlightType === HIGHLIGHT_CAPTURE) {
-                  // remove captured tile off of board
-                  const playerOther = players[state.currentPlayer ? 0 : 1];
-                  const tileToCaptureIndex = playerOther.tilesOnBoard.findIndex((tileInfo) => tileInfo.iSpace === action.payload.iSpace);
-                  if (tileToCaptureIndex !== -1) {
-                    playerOther.tilesCaptured.push(playerOther.tilesOnBoard[tileToCaptureIndex]);
-                    playerOther.tilesOnBoard.splice(tileToCaptureIndex, 1);
-                  }
-                }
-                if (action.payload.highlightType !== HIGHLIGHT_CAPTURE_STRIKE) {
-                  // actually move the selected tile
-                  tileSelected.iSpace = action.payload.iSpace;
-                }
-                tileSelected.moves += 1;
-                tileSelected.iPlayer = state.currentPlayer;
-              }
-            } else {
-              placeTileFromBagOnBoard(player, state.currentPlayer, selectedTile.tileType, action.payload.iSpace);
-            }
+            moveTileHelper(players, state, action.payload);
           }
         ),
         gameState: GAME_SELECT_OR_DRAW
@@ -338,10 +255,6 @@ export default (state = initialState, action) => {
     default:
       return state
   }
-}
-
-const randomTileFromBag = (player) => {
-  return player.tilesInBag[0].type;
 }
 
 // initialize the board and players
@@ -425,7 +338,7 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) 
       }
     case GAME_TILE_SELECTED:
       return {
-        type: GAME_TILE_MOVE,
+        type: highlightType === HIGHLIGHT_COMMAND ? GAME_TILE_SELECTED_COMMAND_MOVE : GAME_TILE_MOVE,
         payload: {
           iSpace,
           highlightType
