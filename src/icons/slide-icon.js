@@ -50,7 +50,7 @@ const JumpSlideIcon = ({ center, maxWidth, slideType }) => {
 
 const downArrow = [
   { x: 0.15, y: 0.2 },
-  { x: 0.15, y: 0.2 },
+  { x: 0.85, y: 0.2 },
   { x: 0.5, y: 0.8 }
 ];
 
