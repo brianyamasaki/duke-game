@@ -26,7 +26,8 @@ import { strikeIconPoints } from '../../../game/shapes/strikeStar';
 import { 
   CaptureIcon,
   CommandIcon,
-  SlideIcon 
+  SlideIcon,
+  JumpSlideIcon
 } from '../../../../icons';
 
 import './tile.css';
@@ -160,10 +161,11 @@ class Tile extends Component {
     
         );
       case RULETYPE_SLIDE:
+        return <SlideIcon key={i} center={ruleMarker} maxWidth={100} slideType={ruleMarker.slideType} />;
       case RULETYPE_JUMPSLIDE:
-        return <SlideIcon center={ruleMarker} maxWidth={100} slideType={ruleMarker.slideType} />;
+        return <JumpSlideIcon key={i} center={ruleMarker} maxWidth={100} slideType={ruleMarker.slideType} />;
       case RULETYPE_COMMAND:
-        return <CommandIcon center={ruleMarker} maxWidth={100} />;
+        return <CommandIcon key={i} center={ruleMarker} maxWidth={100} />;
       default:
         window.alert('No support for rules of type ' + ruleMarker.ruleType);
         break;
