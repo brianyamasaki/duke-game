@@ -161,8 +161,9 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
 
       if (!tileInfo) {
         // highlighting of empty spaces
-        if (ruleType === RULETYPE_COMMAND) {
-          // don't highlight empty spaces specified by COMMAND rules
+        if (ruleType === RULETYPE_COMMAND ||
+          ruleType === RULETYPE_STRIKE) {
+          // don't highlight empty spaces specified by COMMAND or STRIKE rules
           return;
         }
         return {
