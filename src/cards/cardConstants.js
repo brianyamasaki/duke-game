@@ -28,6 +28,7 @@ export const SLIDE_DIAG_UP_RIGHT = 'SLIDE_DIAG_UP_RIGHT';
 export const SLIDE_DIAG_DOWN_LEFT = 'SLIDE_DIAG_DOWN_LEFT';
 export const SLIDE_DIAG_DOWN_RIGHT = 'SLIDE_DIAG_DOWN_RIGHT';
 
+// these are used in descriptions of moves for tiles
 export const RULETYPE_MOVE = 'move';
 export const RULETYPE_JUMP = 'jump';
 export const RULETYPE_SLIDE = 'slide';
@@ -35,3 +36,6 @@ export const RULETYPE_JUMPSLIDE = 'jumpslide';
 export const RULETYPE_STRIKE = 'strike';
 export const RULETYPE_COMMAND = 'command';
 export const DENYMOVESPACES = 'denyMoveSpaces';
+
+// special ruletypes not for use in moves for tiles
+export const RULETYPE_COMMAND_MOVES = 'ruletype_command_moves';

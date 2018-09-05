@@ -79,11 +79,13 @@ export const moveTileHelper = (players, state, payload) => {
   const currentPlayer = state.currentPlayer;
   const selectedTileStack = state.selectedTileStack;
   const player = players[currentPlayer];
-  const selectedTile = selectedTileStack[selectedTileStack.length - 1];
-  if (selectedTile.selectionType === SELECTED_TILE_ON_BOARD) {
+  // always move the last selected tile
+  const selectedTileToMove = selectedTileStack[selectedTileStack.length - 1];
+  if (selectedTileToMove.selectionType === SELECTED_TILE_ON_BOARD) {
     // move tile currently on the board
-    const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === selectedTile.iSpace);
+    const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === selectedTileToMove.iSpace);
     if (tileSelected) {
+      // tileSelected is the tile to move
       if (payload.highlightType === HIGHLIGHT_CAPTURE) {
         // remove captured tile off of board
         const playerOther = players[currentPlayer ? 0 : 1];
@@ -94,14 +96,25 @@ export const moveTileHelper = (players, state, payload) => {
         }
       }
       if (payload.highlightType !== HIGHLIGHT_CAPTURE_STRIKE) {
-        // actually move the selected tile
+        // actually move the selected tile as long as we are not a CAPTURE_STRIKE
         tileSelected.iSpace = payload.iSpace;
       }
-      tileSelected.moves += 1;
+      // Increment the first selected selection
+      if (selectedTileStack.length === 1) {
+        // only one tile in selection stack, so increment the same tile
+        tileSelected.moves += 1;
+      } else {
+        // find the firt selected tile
+        const iSpaceSelectedOldest = selectedTileStack[0].iSpace;
+        const tileToIncrement = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === iSpaceSelectedOldest);
+        if (tileToIncrement) {
+          tileToIncrement.moves += 1;
+        }
+      }
       tileSelected.iPlayer = currentPlayer;
     }
   } else {
-    placeTileFromBagOnBoard(player, currentPlayer, selectedTile.tileType, payload.iSpace);
+    placeTileFromBagOnBoard(player, currentPlayer, selectedTileToMove.tileType, payload.iSpace);
   }
 }
 

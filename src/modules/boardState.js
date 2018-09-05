@@ -10,7 +10,10 @@ import {
   HIGHLIGHTS_DUKES_FOOTMEN
  } from '../cards';
 import { cloneObject } from '../shared';
-import { highlightsFromType } from '../cards/cardHighlights';
+import { 
+  highlightsFromType,
+  commandHighlightsFromType
+} from '../cards/cardHighlights';
 import {
   HINT_SELECT_OR_DRAW,
   HINT_PLACE_DUKE,
@@ -37,7 +40,7 @@ export const GAME_CHOOSE_FOOTMAN2_POSITION = 'GAME_CHOOSE_FOOTMAN2_POSITION';
 export const GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION = 'GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION';
 export const GAME_SELECT_OR_DRAW = 'GAME_SELECT_OR_DRAW';
 export const GAME_TILE_SELECTED = 'GAME_TILE_SELECTED';
-export const GAME_TILE_SELECTED_COMMAND_MOVE = 'GAME_TILE_SELECTED_COMMAND_MOVE';
+export const GAME_TILE_SELECTED_COMMAND_HIGHLIGHT = 'GAME_TILE_SELECTED_COMMAND_HIGHLIGHT';
 export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
 export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
 export const GAME_SWAP_PLAYERS = 'GAME_SWAP_PLAYERS';
@@ -216,7 +219,24 @@ export default (state = initialState, action) => {
           selectionType: SELECTED_TILE_ON_BOARD
         }),
         uiHint: action.payload.uiHint,
-      }
+      };
+    case GAME_TILE_SELECTED_COMMAND_HIGHLIGHT:
+      return {
+        ...state,
+        highlighted: commandHighlightsFromType(
+          state.players,
+          state.selectedTileStack[0].iSpace,
+          state.selectedTileStack[0].tileType,
+          action.payload.isOdd,
+          state.currentPlayer
+        ),
+        selectedTileStack: state.selectedTileStack.concat({
+          iSpace: action.payload.iSpace,
+          tileType: action.payload.tileType,
+          selectionType: SELECTED_TILE_ON_BOARD
+        }),
+        uiHint: action.payload.uiHint
+      };
     case GAME_TILE_MOVE:
       return {
         ...state,
@@ -338,7 +358,7 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) 
       }
     case GAME_TILE_SELECTED:
       return {
-        type: highlightType === HIGHLIGHT_COMMAND ? GAME_TILE_SELECTED_COMMAND_MOVE : GAME_TILE_MOVE,
+        type: highlightType === HIGHLIGHT_COMMAND ? GAME_TILE_SELECTED_COMMAND_HIGHLIGHT : GAME_TILE_MOVE,
         payload: {
           iSpace,
           highlightType

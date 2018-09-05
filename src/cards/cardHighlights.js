@@ -13,7 +13,8 @@ import {
   RULETYPE_SLIDE,
   RULETYPE_JUMPSLIDE,
   RULETYPE_COMMAND,
-  DENYMOVESPACES
+  DENYMOVESPACES,
+  RULETYPE_COMMAND_MOVES
 } from './cardConstants';
 import { 
   BOARD_ROW_COUNT, 
@@ -52,13 +53,33 @@ export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
   return highlightsFromRules(players, iSpace, moves, isOdd, iPlayer);
 };
 
+// return command highlights only
+export const commandHighlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
+  const moves = movesFromTiletype(type);
+  const ruleSet = isOdd ? moves.odd : moves.even;
+  let highlights = [];
+  if (ruleSet[RULETYPE_COMMAND]) {
+    highlights = highlights.concat(
+      spacesFromRowColRules(
+        players,
+        iSpace,
+        ruleSet[RULETYPE_COMMAND],
+        iPlayer,
+        RULETYPE_COMMAND_MOVES
+      )
+    );
+  }
+  return highlights;
+}
+
 const highlightTypes = {
   [RULETYPE_MOVE]: HIGHLIGHT_MOVE,
   [RULETYPE_JUMP]: HIGHLIGHT_JUMP,
   [RULETYPE_SLIDE]: HIGHLIGHT_SLIDE,
   [RULETYPE_JUMPSLIDE]: HIGHLIGHT_JUMPSLIDE,
   [RULETYPE_STRIKE]: HIGHLIGHT_STRIKE,
-  [RULETYPE_COMMAND]: HIGHLIGHT_COMMAND
+  [RULETYPE_COMMAND]: HIGHLIGHT_COMMAND,
+  [RULETYPE_COMMAND_MOVES]: HIGHLIGHT_MOVE
 }
 
 const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
