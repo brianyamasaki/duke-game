@@ -7,7 +7,15 @@ import {
   SLIDE_DIAG_UP_LEFT,
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
-  SLIDE_DIAG_DOWN_RIGHT
+  SLIDE_DIAG_DOWN_RIGHT,
+  JUMPSLIDE_UP,
+  JUMPSLIDE_DOWN,
+  JUMPSLIDE_LEFT,
+  JUMPSLIDE_RIGHT,
+  JUMPSLIDE_DIAG_UP_LEFT,
+  JUMPSLIDE_DIAG_UP_RIGHT,
+  JUMPSLIDE_DIAG_DOWN_LEFT,
+  JUMPSLIDE_DIAG_DOWN_RIGHT
 } from '../cards/cardConstants';
 
 const SlideIcon = ({ center, maxWidth, slideType }) => {
@@ -104,7 +112,15 @@ const mpSlideArrows = {
   [SLIDE_DIAG_UP_LEFT]: upLeftArrow,
   [SLIDE_DIAG_UP_RIGHT]: upRightArrow,
   [SLIDE_DIAG_DOWN_LEFT]: downLeftArrow,
-  [SLIDE_DIAG_DOWN_RIGHT]: downRightArrow
+  [SLIDE_DIAG_DOWN_RIGHT]: downRightArrow,
+  [JUMPSLIDE_UP]: upArrow,
+  [JUMPSLIDE_DOWN]: downArrow,
+  [JUMPSLIDE_LEFT]: leftArrow,
+  [JUMPSLIDE_RIGHT]: rightArrow,
+  [JUMPSLIDE_DIAG_UP_LEFT]: upLeftArrow,
+  [JUMPSLIDE_DIAG_UP_RIGHT]: upRightArrow,
+  [JUMPSLIDE_DIAG_DOWN_LEFT]: downLeftArrow,
+  [JUMPSLIDE_DIAG_DOWN_RIGHT]: downRightArrow
 }
 
 export { SlideIcon, JumpSlideIcon };

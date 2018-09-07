@@ -5,6 +5,7 @@ import {
   RULETYPE_STRIKE,
   RULETYPE_COMMAND,
   RULETYPE_SLIDE,
+  RULETYPE_JUMPSLIDE,
   SLIDE_UP,
   SLIDE_DOWN,
   SLIDE_LEFT,
@@ -13,7 +14,14 @@ import {
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
   SLIDE_DIAG_DOWN_RIGHT,
-  RULETYPE_JUMPSLIDE,
+  JUMPSLIDE_UP,
+  JUMPSLIDE_DOWN,
+  JUMPSLIDE_LEFT,
+  JUMPSLIDE_RIGHT,
+  JUMPSLIDE_DIAG_UP_LEFT,
+  JUMPSLIDE_DIAG_UP_RIGHT,
+  JUMPSLIDE_DIAG_DOWN_LEFT,
+  JUMPSLIDE_DIAG_DOWN_RIGHT,
   TILE_LONGBOWMAN
 } from '../../../../cards/cardConstants';
 import {
@@ -40,7 +48,15 @@ const mpSlideTypePos = {
   [SLIDE_DIAG_UP_LEFT]: { row: -1, col: -1 },
   [SLIDE_DIAG_UP_RIGHT]: { row: -1, col: 1 },
   [SLIDE_DIAG_DOWN_LEFT]: { row: 1, col: -1 },
-  [SLIDE_DIAG_DOWN_RIGHT]: { row: 1, col: 1 }
+  [SLIDE_DIAG_DOWN_RIGHT]: { row: 1, col: 1 },
+  [JUMPSLIDE_UP]: { row: -2, col: 0 },
+  [JUMPSLIDE_DOWN]: { row: 2, col: 0 },
+  [JUMPSLIDE_LEFT]: { row: 0, col: -2 },
+  [JUMPSLIDE_RIGHT]: { row: 0, col: 2 },
+  [JUMPSLIDE_DIAG_UP_LEFT]: { row: -2, col: -2 },
+  [JUMPSLIDE_DIAG_UP_RIGHT]: { row: -2, col: 2 },
+  [JUMPSLIDE_DIAG_DOWN_LEFT]: { row: 2, col: -2 },
+  [JUMPSLIDE_DIAG_DOWN_RIGHT]: { row: 2, col: 2 }
 };
 
 const ruleMarkersFromTiletype = (tileType, isOdd) => {

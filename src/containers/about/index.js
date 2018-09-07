@@ -7,6 +7,14 @@ const details = [
   'All tiles are drawn using SVG, meaning they literally reflect the movement rules'
 ];
 const todos = [
+  'Must support JumpSlides',
+  'Champion Tile',
+  'Marshall Tile',
+  'Bowman Tile',
+  'Dragoond Tile',
+  'Assasin Tile',
+  'Duchess Tile',
+  'Oracle Tile'
 ];
 const About = () => (
   <Grid>

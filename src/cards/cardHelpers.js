@@ -9,6 +9,7 @@ import { pikemanMoves } from './pikeman';
 import { longbowmanMoves } from './longbowman';
 import { generalMoves } from './general';
 import { marshallMoves } from './marshall';
+import { assassinMoves } from './assassin';
 
 // insert all moves into this array
 const moves = [
@@ -22,12 +23,13 @@ const moves = [
   pikemanMoves,
   longbowmanMoves,
   generalMoves,
-  marshallMoves
+  marshallMoves,
+  assassinMoves
 ];
 
 const mpTiletypeInfo = {};
 
-// This code creates an object with all moves
+// This code creates an object with all tile data, moves, names, countInBag
 moves.forEach(moves => mpTiletypeInfo[moves.type] = {
   moves,
   name: moves.name,
