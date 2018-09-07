@@ -62,12 +62,12 @@ $tileTypes: bowman champion dragoon duchess duke footman general knight marshall
 }
 
 .svgTile {
-  background-image: url('./images/light.jpg');
+  background: white url('./images/light.jpg');
   background-size: 100%;
   margin: 5%;
 
   &.dark {
-    background-image: url('./images/dark.jpg');
+    background: tan url('./images/dark.jpg');
     &.rotateDark {
       transform: rotate(180deg);
     }
