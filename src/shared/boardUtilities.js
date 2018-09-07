@@ -99,7 +99,7 @@ export const moveTileHelper = (players, state, payload) => {
         // actually move the selected tile as long as we are not a CAPTURE_STRIKE
         tileSelected.iSpace = payload.iSpace;
       }
-      // Increment the first selected selection
+      // Increment the first selected tile
       if (selectedTileStack.length === 1) {
         // only one tile in selection stack, so increment the same tile
         tileSelected.moves += 1;

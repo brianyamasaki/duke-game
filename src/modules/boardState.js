@@ -241,7 +241,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         highlighted: [],
-        selectedTileStack: state.selectedTileStack.slice(0, state.selectedTileStack.length - 1),
+        selectedTileStack: [],
         players: cloneAndModifyPlayers(
           state.players,
           state.currentPlayer,
