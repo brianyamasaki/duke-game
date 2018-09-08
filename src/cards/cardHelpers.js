@@ -9,6 +9,7 @@ import { pikemanMoves } from './pikeman';
 import { longbowmanMoves } from './longbowman';
 import { generalMoves } from './general';
 import { marshallMoves } from './marshall';
+import { dragoonMoves } from './dragoon';
 
 // insert all moves into this array
 const moves = [
@@ -22,7 +23,8 @@ const moves = [
   pikemanMoves,
   longbowmanMoves,
   generalMoves,
-  marshallMoves
+  marshallMoves,
+  dragoonMoves
 ];
 
 const mpTiletypeInfo = {};
