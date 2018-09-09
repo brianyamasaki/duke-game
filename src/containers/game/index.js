@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Game from '../../components/game';
 
 import { setDebugMode } from '../../modules/boardState';
-import './index.css';
 
 class GamePage extends Component {
 

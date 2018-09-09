@@ -5,6 +5,8 @@ import About from '../about'
 import Header from './header';
 import GamePage from '../game';
 
+import './app.css';
+
 const App = () => (
   <div>
     <Header />

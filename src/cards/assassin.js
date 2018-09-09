@@ -1,0 +1,30 @@
+import { 
+  TILE_ASSASSIN,
+  RULETYPE_JUMPSLIDE,
+  JUMPSLIDE_UP,
+  JUMPSLIDE_DOWN,
+  JUMPSLIDE_DIAG_UP_LEFT,
+  JUMPSLIDE_DIAG_UP_RIGHT,
+  JUMPSLIDE_DIAG_DOWN_LEFT,
+  JUMPSLIDE_DIAG_DOWN_RIGHT
+} from './cardConstants';
+
+export const assassinMoves = {
+  type: TILE_ASSASSIN,
+  name: 'Assassin',
+  countInBag: 1,
+  odd: {
+    [RULETYPE_JUMPSLIDE]: [
+      JUMPSLIDE_UP,
+      JUMPSLIDE_DIAG_DOWN_LEFT,
+      JUMPSLIDE_DIAG_DOWN_RIGHT
+    ]
+  },
+  even: {
+    [RULETYPE_JUMPSLIDE]: [
+      JUMPSLIDE_DIAG_UP_LEFT,
+      JUMPSLIDE_DIAG_UP_RIGHT,
+      JUMPSLIDE_DOWN
+    ]
+  }
+};

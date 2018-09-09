@@ -150,26 +150,27 @@ export default (state = initialState, action) => {
         players: playersClone
       };
     case GAME_CHOOSE_FOOTMAN1_POSITION:
+      playersClone = cloneAndModifyPlayers(
+        state.players, 
+        state.currentPlayer, 
+        (players) => placeTileFromBagOnBoard(
+          players[state.currentPlayer], 
+          state.currentPlayer, 
+          TILE_FOOTMAN, 
+          action.payload.iSpace)
+      );
       return {
         ...state,
         gameState: GAME_CHOOSE_FOOTMAN2_POSITION,
         highlighted: highlightsFromType(
-          state.players,
+          playersClone,
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
           state.currentPlayer
         ),
         uiHint: action.payload.uiHint,
-        players: cloneAndModifyPlayers(
-          state.players, 
-          state.currentPlayer, 
-          (players) => placeTileFromBagOnBoard(
-            players[state.currentPlayer], 
-            state.currentPlayer, 
-            TILE_FOOTMAN, 
-            action.payload.iSpace)
-        )
+        players: playersClone 
       };
     case GAME_CHOOSE_FOOTMAN2_POSITION:
       return {

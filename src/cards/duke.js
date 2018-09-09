@@ -4,7 +4,8 @@ import {
   SLIDE_DOWN, 
   SLIDE_UP, 
   SLIDE_LEFT, 
-  SLIDE_RIGHT 
+  SLIDE_RIGHT,
+  RULETYPE_INITIAL_FOOTMAN
 } from './cardConstants';
 
 export const dukeMoves = {
@@ -30,7 +31,7 @@ export const dukeFootmen = {
   name: '',
   countInBag: 0, // this is not a real tile
   odd: {
-    move: [
+    [RULETYPE_INITIAL_FOOTMAN]: [
      { row: -1, col: 0 },
      { row: 0, col: -1 },
      { row: 0, col: 1 },
@@ -38,7 +39,7 @@ export const dukeFootmen = {
     ]
   },
   even: {
-    move: [
+    [RULETYPE_INITIAL_FOOTMAN]: [
       { row: -1, col: 0 },
       { row: 0, col: -1 },
       { row: 0, col: 1 },

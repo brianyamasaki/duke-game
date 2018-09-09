@@ -86,7 +86,8 @@ export const moveTileHelper = (players, state, payload) => {
     const tileSelected = player.tilesOnBoard.find(tileInfo => tileInfo.iSpace === selectedTileToMove.iSpace);
     if (tileSelected) {
       // tileSelected is the tile to move
-      if (payload.highlightType === HIGHLIGHT_CAPTURE) {
+      if (payload.highlightType === HIGHLIGHT_CAPTURE ||
+        payload.highlightType === HIGHLIGHT_CAPTURE_STRIKE) {
         // remove captured tile off of board
         const playerOther = players[currentPlayer ? 0 : 1];
         const tileToCaptureIndex = playerOther.tilesOnBoard.findIndex((tileInfo) => tileInfo.iSpace === payload.iSpace);

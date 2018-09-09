@@ -7,6 +7,14 @@ import {
   SLIDE_DIAG_UP_RIGHT,
   SLIDE_DIAG_DOWN_LEFT,
   SLIDE_DIAG_DOWN_RIGHT,
+  JUMPSLIDE_UP,
+  JUMPSLIDE_DOWN,
+  JUMPSLIDE_LEFT,
+  JUMPSLIDE_RIGHT,
+  JUMPSLIDE_DIAG_UP_LEFT,
+  JUMPSLIDE_DIAG_UP_RIGHT,
+  JUMPSLIDE_DIAG_DOWN_LEFT,
+  JUMPSLIDE_DIAG_DOWN_RIGHT,
   RULETYPE_MOVE,
   RULETYPE_JUMP,
   RULETYPE_STRIKE,
@@ -14,7 +22,8 @@ import {
   RULETYPE_JUMPSLIDE,
   RULETYPE_COMMAND,
   DENYMOVESPACES,
-  RULETYPE_COMMAND_MOVES
+  RULETYPE_COMMAND_MOVES,
+  RULETYPE_INITIAL_FOOTMAN
 } from './cardConstants';
 import { 
   BOARD_ROW_COUNT, 
@@ -79,7 +88,8 @@ const highlightTypes = {
   [RULETYPE_JUMPSLIDE]: HIGHLIGHT_JUMPSLIDE,
   [RULETYPE_STRIKE]: HIGHLIGHT_STRIKE,
   [RULETYPE_COMMAND]: HIGHLIGHT_COMMAND,
-  [RULETYPE_COMMAND_MOVES]: HIGHLIGHT_MOVE
+  [RULETYPE_COMMAND_MOVES]: HIGHLIGHT_MOVE,
+  [RULETYPE_INITIAL_FOOTMAN]: HIGHLIGHT_MOVE
 }
 
 const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
@@ -90,6 +100,7 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
       case RULETYPE_MOVE:
       case RULETYPE_JUMP:
       case RULETYPE_STRIKE:
+      case RULETYPE_INITIAL_FOOTMAN:
         highlights = highlights.concat(
           spacesFromRowColRules(
             players,
@@ -230,36 +241,49 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
     colT = col;
   switch(slide) {
     case SLIDE_DIAG_UP_LEFT:
+    case JUMPSLIDE_DIAG_UP_LEFT:
       rule = { row: -1 * sign, col: -1 * sign };
       break;
     case SLIDE_DIAG_UP_RIGHT:
+    case JUMPSLIDE_DIAG_UP_RIGHT:
       rule = { row: -1 * sign, col: 1 * sign };
       break;
     case SLIDE_DIAG_DOWN_LEFT:
+    case JUMPSLIDE_DIAG_DOWN_LEFT:
       rule = { row: 1 * sign, col: -1 * sign };
       break;
     case SLIDE_DIAG_DOWN_RIGHT:
+    case JUMPSLIDE_DIAG_DOWN_RIGHT:
       rule = { row: 1 * sign, col: 1 * sign };
       break;
     case SLIDE_UP:
+    case JUMPSLIDE_UP:
       rule = { row: -1 * sign, col: 0 };
       break;
     case SLIDE_DOWN:
+    case JUMPSLIDE_DOWN:
       rule = { row: 1 * sign, col: 0 };
       break;
     case SLIDE_LEFT:
+    case JUMPSLIDE_LEFT:
       rule = { row: 0, col: -1 * sign };
       break;
     case SLIDE_RIGHT:
+    case JUMPSLIDE_RIGHT:
       rule = { row: 0, col: 1 * sign };
       break;
     default:
-      window.alert('Illegal SLIDE type ' + slide);
+      window.alert('Illegal SLIDE type ' + slide + ' in spacesAlongSlides');
       break;
   }
   for (i = 0; i < BOARD_ROW_COUNT; i++) {
     colT += rule.col;
     rowT += rule.row;
+    if (ruleType === RULETYPE_JUMPSLIDE &&
+      i === 0) {
+      // JUMPSLIDES always jump over the first space
+      continue;
+    } 
     let iSpaceT = rowColToIndex(rowT, colT);
     if (colT < 0  || colT >= BOARD_ROW_COUNT ||
       rowT < 0 || rowT >= BOARD_ROW_COUNT) {
@@ -276,11 +300,9 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
             iSpace: iSpaceT,
             type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
           });
-          if (ruleType !== RULETYPE_JUMPSLIDE)
-            break;
+          break;
         } else {
-          if (ruleType !== RULETYPE_JUMPSLIDE)
-            break;
+          break;
         }
       }
   }

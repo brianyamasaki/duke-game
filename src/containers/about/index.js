@@ -4,9 +4,16 @@ import packageJson from '../../../package.json';
 
 const details = [
   'Command moves are now supported',
-  'All tiles are drawn using SVG, meaning they literally reflect the movement rules'
+  'All tiles are drawn using SVG, meaning they literally reflect the movement rules',
+  'Jump Slide rules are now supported - Assassin tile implemented'
 ];
 const todos = [
+  'Champion Tile',
+  'Marshall Tile',
+  'Bowman Tile',
+  'Dragoond Tile',
+  'Duchess Tile',
+  'Oracle Tile'
 ];
 const About = () => (
   <Grid>
