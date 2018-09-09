@@ -22,7 +22,8 @@ import {
   RULETYPE_JUMPSLIDE,
   RULETYPE_COMMAND,
   DENYMOVESPACES,
-  RULETYPE_COMMAND_MOVES
+  RULETYPE_COMMAND_MOVES,
+  RULETYPE_INITIAL_FOOTMAN
 } from './cardConstants';
 import { 
   BOARD_ROW_COUNT, 
@@ -87,7 +88,8 @@ const highlightTypes = {
   [RULETYPE_JUMPSLIDE]: HIGHLIGHT_JUMPSLIDE,
   [RULETYPE_STRIKE]: HIGHLIGHT_STRIKE,
   [RULETYPE_COMMAND]: HIGHLIGHT_COMMAND,
-  [RULETYPE_COMMAND_MOVES]: HIGHLIGHT_MOVE
+  [RULETYPE_COMMAND_MOVES]: HIGHLIGHT_MOVE,
+  [RULETYPE_INITIAL_FOOTMAN]: HIGHLIGHT_MOVE
 }
 
 const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
@@ -98,6 +100,7 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
       case RULETYPE_MOVE:
       case RULETYPE_JUMP:
       case RULETYPE_STRIKE:
+      case RULETYPE_INITIAL_FOOTMAN:
         highlights = highlights.concat(
           spacesFromRowColRules(
             players,

@@ -47,3 +47,4 @@ export const DENYMOVESPACES = 'denyMoveSpaces';
 
 // special ruletypes not for use in moves for tiles
 export const RULETYPE_COMMAND_MOVES = 'ruletype_command_moves';
+export const RULETYPE_INITIAL_FOOTMAN = 'ruletype_initial_footman';
