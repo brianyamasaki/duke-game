@@ -1,0 +1,13 @@
+html {
+  background: bisque url('./page-background.jpg') repeat-y;
+  background-size: 100%
+}
+
+html body {
+  background-color: transparent 
+}
+
+main .container {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0 2em;
+}
