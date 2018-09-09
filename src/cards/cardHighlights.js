@@ -297,11 +297,9 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
             iSpace: iSpaceT,
             type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
           });
-          if (ruleType !== RULETYPE_JUMPSLIDE)
-            break;
+          break;
         } else {
-          if (ruleType !== RULETYPE_JUMPSLIDE)
-            break;
+          break;
         }
       }
   }
