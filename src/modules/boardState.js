@@ -148,6 +148,7 @@ export default (state = initialState, action) => {
           action.payload.iSpace, 
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
+          state.currentPlayer,
           state.currentPlayer
         ),
         uiHint: action.payload.uiHint,
@@ -171,6 +172,7 @@ export default (state = initialState, action) => {
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
+          state.currentPlayer,
           state.currentPlayer
         ),
         uiHint: action.payload.uiHint,
