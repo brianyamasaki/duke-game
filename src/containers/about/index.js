@@ -11,7 +11,6 @@ const todos = [
   'Champion Tile',
   'Marshall Tile',
   'Bowman Tile',
-  'Dragoond Tile',
   'Duchess Tile',
   'Oracle Tile'
 ];

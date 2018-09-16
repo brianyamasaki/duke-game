@@ -274,6 +274,7 @@ export default (state = initialState, action) => {
           dukeIndex(state.players[state.currentPlayer].tilesOnBoard),
           HIGHLIGHTS_DUKES_FOOTMEN,
           false,
+          state.currentPlayer,
           state.currentPlayer
         );
         let tileType = action.payload ? action.payload : randomTileFromBag(state.players[state.currentPlayer]) ;
