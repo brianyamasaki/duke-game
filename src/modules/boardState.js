@@ -45,6 +45,7 @@ export const GAME_TILE_MOVE = 'GAME_TILE_MOVED';
 export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
 export const GAME_SWAP_PLAYERS = 'GAME_SWAP_PLAYERS';
 export const GAME_DEBUG_MODE = 'GAME_DEBUG_MODE';
+export const GAME_UNDO_MOVE = 'GAME_UNDO_MOVE';
 
 export const PLAYERS_INIT = 'PLAYERS_INIT';
 
@@ -63,7 +64,9 @@ const initialState = {
   currentPlayer: 0,
   players: [playerDft, playerDft],
   uiHint: '',
-  gameDebugMode: false
+  gameDebugMode: false,
+  isUndoable: false,
+  previousStates: []
 };
 
 const cloneAndModifyPlayers = (players, iPlayer, fn) => {
@@ -115,7 +118,8 @@ export default (state = initialState, action) => {
     case GAME_SWAP_PLAYERS:
       return {
         ...state,
-        currentPlayer: state.currentPlayer ? 0 : 1
+        currentPlayer: state.currentPlayer ? 0 : 1,
+        isUndoable: false
       };
     case GAME_DEBUG_MODE:
       return {
@@ -173,20 +177,23 @@ export default (state = initialState, action) => {
         players: playersClone 
       };
     case GAME_CHOOSE_FOOTMAN2_POSITION:
+      playersClone = cloneAndModifyPlayers(
+        state.players, 
+        state.currentPlayer, 
+        (players) => placeTileFromBagOnBoard(
+          players[state.currentPlayer], 
+          state.currentPlayer, 
+          TILE_FOOTMAN, 
+          action.payload.iSpace)
+      );
       return {
         ...state,
         gameState: GAME_SELECT_OR_DRAW,
         highlighted: [], // no highlighted spaces
         uiHint: action.payload.uiHint,
-        players: cloneAndModifyPlayers(
-          state.players, 
-          state.currentPlayer, 
-          (players) => placeTileFromBagOnBoard(
-            players[state.currentPlayer], 
-            state.currentPlayer, 
-            TILE_FOOTMAN, 
-            action.payload.iSpace)
-        )
+        players: playersClone,
+        previousStates: state.previousStates.concat([cloneObject(state.players)]),
+        isUndoable: true
       };
     case GAME_OTHER_PLAYER_CHOOSE_DUKE_POSITION:
       return {
@@ -239,19 +246,22 @@ export default (state = initialState, action) => {
         uiHint: action.payload.uiHint
       };
     case GAME_TILE_MOVE:
+      playersClone = cloneAndModifyPlayers(
+        state.players,
+        state.currentPlayer,
+        (players) => {
+          moveTileHelper(players, state, action.payload);
+        }
+      );
       return {
         ...state,
         highlighted: [],
         selectedTileStack: [],
-        players: cloneAndModifyPlayers(
-          state.players,
-          state.currentPlayer,
-          (players) => {
-            moveTileHelper(players, state, action.payload);
-          }
-        ),
-        gameState: GAME_SELECT_OR_DRAW
-      }
+        players: playersClone,
+        gameState: GAME_SELECT_OR_DRAW,
+        previousStates: state.previousStates.concat([cloneObject(state.players)]),
+        isUndoable: true
+      };
     case GAME_SELECT_TILE_IN_BAG:
       const highlighted = state.gameDebugMode ? 
         debugHighlights() :
@@ -273,6 +283,14 @@ export default (state = initialState, action) => {
           tileType
         }]
       }
+    case GAME_UNDO_MOVE:
+      playersClone = cloneObject(state.previousStates[state.previousStates.length - 1]);
+      return {
+        ...state,
+        players: playersClone,
+        previousStates: state.previousStates.slice(0, state.previousStates.length - 1),
+        isUndoable: false
+      };
     default:
       return state
   }
@@ -377,3 +395,9 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) 
       break;
   }
 }
+
+export const undoMove = () => (
+  {
+    type: GAME_UNDO_MOVE
+  }
+)
