@@ -218,7 +218,8 @@ export default (state = initialState, action) => {
           action.payload.iSpace,
           action.payload.tileType,
           action.payload.isOdd,
-          state.currentPlayer
+          state.currentPlayer,
+          action.payload.tilePlayer
         ),
         gameState: GAME_TILE_SELECTED,
         selectedTileStack: state.selectedTileStack.concat({
@@ -236,7 +237,8 @@ export default (state = initialState, action) => {
           state.selectedTileStack[0].iSpace,
           state.selectedTileStack[0].tileType,
           action.payload.isOdd,
-          state.currentPlayer
+          state.currentPlayer,
+          state.selectedTileStack[0].iPlayer
         ),
         selectedTileStack: state.selectedTileStack.concat({
           iSpace: action.payload.iSpace,
@@ -339,7 +341,7 @@ export const otherPlayerPlaceDuke = () => {
 }
 
 // state machine for clicking on tiles
-export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) => {
+export const spaceClicked = (iSpace, gameState, tileType, isOdd, tilePlayer, highlightType) => {
   switch (gameState) {
     case GAME_CHOOSE_DUKE_POSITION:
       return {
@@ -372,7 +374,8 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) 
           iSpace,
           uiHint: HINT_MOVE_TILE,
           tileType,
-          isOdd
+          isOdd,
+          tilePlayer
         }
       }
     case GAME_TILE_SELECTED:
@@ -380,7 +383,8 @@ export const spaceClicked = (iSpace, gameState, tileType, isOdd, highlightType) 
         type: highlightType === HIGHLIGHT_COMMAND ? GAME_TILE_SELECTED_COMMAND_HIGHLIGHT : GAME_TILE_MOVE,
         payload: {
           iSpace,
-          highlightType
+          highlightType,
+          tilePlayer
         }
       };
     case GAME_TILE_MOVE:

@@ -51,10 +51,16 @@ class SpacesOnBoard extends Component {
     }
   }
 
-  onClick = (e, i, tileType, moves, highlight) => {
+  // e: event
+  // i: index of space
+  // tileType: type of tile (may be undefined)
+  // moves: number of moves made (may be undefined)
+  // highlight: highlight type (may be undefined)
+  // tilePlayer: index of player that owns the tile (0 or 1)
+  onClick = (e, i, tileType, moves, highlight, tilePlayer) => {
     const { spaceClicked, boardState } = this.props;
     const isOdd = tileType && moves ? moves % 2 : false;
-    spaceClicked(i, boardState.gameState, tileType, isOdd, highlight ? highlight.type : null);
+    spaceClicked(i, boardState.gameState, tileType, isOdd, tilePlayer, highlight ? highlight.type : null);
   }
 
   renderTile = (tile, highlight) => {
@@ -110,7 +116,7 @@ class SpacesOnBoard extends Component {
             cancelSelection();
             return;
           } 
-          (highlight || isTileSelectable) && this.onClick(e, i, space.type, space.moves, highlight)
+          (highlight || isTileSelectable) && this.onClick(e, i, space.type, space.moves, highlight, space.iPlayer)
         }}
         style={style}>
         { this.renderTile(space, highlight)}

@@ -57,13 +57,13 @@ const isTileOnSpace = (players, iSpace) => {
   }
 };
 
-export const highlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
+export const highlightsFromType = (players, iSpace, type, isOdd, iPlayerCurrent, iPlayerTile) => {
   const moves = movesFromTiletype(type);
-  return highlightsFromRules(players, iSpace, moves, isOdd, iPlayer);
+  return highlightsFromRules(players, iSpace, moves, isOdd, iPlayerCurrent, iPlayerTile);
 };
 
 // return command highlights only
-export const commandHighlightsFromType = (players, iSpace, type, isOdd, iPlayer) => {
+export const commandHighlightsFromType = (players, iSpace, type, isOdd, iPlayerCurrent, iPlayerTile) => {
   const moves = movesFromTiletype(type);
   const ruleSet = isOdd ? moves.odd : moves.even;
   let highlights = [];
@@ -73,7 +73,8 @@ export const commandHighlightsFromType = (players, iSpace, type, isOdd, iPlayer)
         players,
         iSpace,
         ruleSet[RULETYPE_COMMAND],
-        iPlayer,
+        iPlayerCurrent,
+        iPlayerTile, 
         RULETYPE_COMMAND_MOVES
       )
     );
@@ -92,7 +93,7 @@ const highlightTypes = {
   [RULETYPE_INITIAL_FOOTMAN]: HIGHLIGHT_MOVE
 }
 
-const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
+const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayerCurrent, iPlayerTile) => {
   let highlights = [];
   const ruleSet = isOdd ? moves.odd : moves.even;
   for (let key in ruleSet) {
@@ -100,13 +101,15 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
       case RULETYPE_MOVE:
       case RULETYPE_JUMP:
       case RULETYPE_STRIKE:
+      case RULETYPE_COMMAND:
       case RULETYPE_INITIAL_FOOTMAN:
         highlights = highlights.concat(
           spacesFromRowColRules(
             players,
             iSpace, 
             ruleSet[key], 
-            iPlayer,
+            iPlayerCurrent,
+            iPlayerTile,
             key
           )
         );
@@ -118,18 +121,8 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
             players, 
             iSpace, 
             ruleSet[key], 
-            iPlayer, 
-            key
-          )
-        );
-        break;
-      case RULETYPE_COMMAND:
-        highlights = highlights.concat(
-          spacesFromRowColRules(
-            players,
-            iSpace,
-            ruleSet[key],
-            iPlayer,
+            iPlayerCurrent, 
+            iPlayerTile,
             key
           )
         );
@@ -145,11 +138,11 @@ const highlightsFromRules = (players, iSpace, moves, isOdd, iPlayer) => {
   return highlights;
 }
 
-const spacesFromSlideRules = (players, iSpace, rules, iPlayer, ruleType) => {
-  const sign = iPlayer ? -1 : 1;
+const spacesFromSlideRules = (players, iSpace, rules, iPlayerCurrent, iPlayerTile, ruleType) => {
+  const sign = iPlayerTile ? -1 : 1;
   let highlights = [];
   rules.forEach(slide => {
-    highlights = highlights.concat(spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType));
+    highlights = highlights.concat(spacesAlongSlide(players, iSpace, sign, slide, iPlayerCurrent, iPlayerTile, ruleType));
   })
   return highlights;
 }
@@ -164,8 +157,8 @@ const isValidSpace = (row, col) => {
   return false;
 }
 
-const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) => {
-  const sign = iPlayer ? -1 : 1;
+const highlightFromRule = (rule, players, iPlayerCurrent, iPlayerTile, rowTile, colTile, ruleType) => {
+  const sign = iPlayerTile ? -1 : 1;
   const rowFromRule = rowTile + (rule.row * sign);
   const colFromRule = colTile + (rule.col * sign);
   let denyTile;
@@ -204,7 +197,7 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
         };
       } else {
         let highlight;
-        if (tileInfo.iPlayer !== iPlayer) {
+        if (tileInfo.iPlayer !== iPlayerTile) {
           highlight = ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE;
         } else if (ruleType === RULETYPE_COMMAND) {
           highlight = HIGHLIGHT_COMMAND;
@@ -220,11 +213,11 @@ const highlightFromRule = (rule, players, iPlayer, rowTile, colTile, ruleType) =
   } 
 }
 
-const spacesFromRowColRules = (players, iSpace, rules, iPlayer, ruleType) => {
+const spacesFromRowColRules = (players, iSpace, rules, iPlayerCurrent, iPlayerTile, ruleType) => {
   const { row, col } = indexToRowCol(iSpace);
   const highlights = [];
   rules.forEach(rule => {
-    const highlight = highlightFromRule(rule, players, iPlayer, row, col, ruleType);
+    const highlight = highlightFromRule(rule, players, iPlayerCurrent, iPlayerTile, row, col, ruleType);
     if (highlight) {
       highlights.push(highlight);
     }
@@ -232,7 +225,7 @@ const spacesFromRowColRules = (players, iSpace, rules, iPlayer, ruleType) => {
   return highlights;
 }
 
-function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
+function spacesAlongSlide(players, iSpace, sign, slide, iPlayerCurrent, iPlayerTile, ruleType) {
   const highlights = [];
   const { row, col } = indexToRowCol(iSpace);
   let rule, 
@@ -295,7 +288,7 @@ function spacesAlongSlide(players, iSpace, sign, slide, iPlayer, ruleType) {
             iSpace: iSpaceT,
             type: highlightTypes[ruleType]
           });
-        } else if (tileInfo.iPlayer !== iPlayer) {
+        } else if (tileInfo.iPlayer !== iPlayerTile) {
           highlights.push({
             iSpace: iSpaceT,
             type: ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE
