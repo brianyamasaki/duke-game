@@ -5,8 +5,7 @@ import {
 const createCard = type => {
   return {
     type,
-    moveIndex: 1,
-    spaceIndex: -1
+    moveIndex: 1
   }
 }
 

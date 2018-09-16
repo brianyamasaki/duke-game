@@ -10,7 +10,8 @@ import {
   setDebugMode, 
   selectTileInBag,
   swapPlayers,
-  playersInit
+  playersInit,
+  undoMove
 } from '../../../modules/boardState';
 
 import {
@@ -24,7 +25,8 @@ class SidebarUi extends Component {
   state = {
     uiHint: '',
     gameDebugMode: false,
-    selectedTile: {}
+    selectedTile: {},
+    disableEndOfTurn: false
   };
 
   componentDidMount() {
@@ -91,7 +93,7 @@ class SidebarUi extends Component {
     if (!gameDebugMode) {
       return (
         <div>
-          <Button bsStyle='primary' onClick={() => selectTileInBag()}>Draw a Tile</Button>
+          <Button bsStyle='primary' onClick={() => selectTileInBag()} >Draw a Tile</Button>
         </div>
       )
     }
@@ -107,13 +109,44 @@ class SidebarUi extends Component {
     );
   }
 
+  onClickEndOfTurn = action => {
+    this.setState({ disableEndOfTurn: true },
+      () => {
+        setTimeout(
+          () => this.setState({ disableEndOfTurn: false}),
+          1000
+        );
+      }
+    );
+    action();
+  }
+
   renderEndOfTurn = () => {
-    const { gameState, swapPlayers } = this.props;
+    const { 
+      gameState, 
+      swapPlayers,
+      undoMove,
+      previousStates,
+      isUndoable
+    } = this.props;
 
     if (gameState === GAME_SELECT_OR_DRAW)
       return (
         <div className='buttonZone'>
-          <Button bsStyle='default' onClick={swapPlayers}>End of Turn</Button>
+          <Button 
+            bsStyle='default'
+            onClick={() => this.onClickEndOfTurn(undoMove)}
+            disabled={this.state.disableEndOfTurn || previousStates.length < 1 || !isUndoable}
+          >
+            Undo Move
+          </Button>
+          <Button 
+            bsStyle='primary' 
+            onClick={() => this.onClickEndOfTurn(swapPlayers)} 
+            disabled={this.state.disableEndOfTurn}
+          >
+            End of Turn
+          </Button>
         </div>
       );
   }
@@ -192,7 +225,9 @@ const mapStateToProps = ({ boardState }) => {
     currentPlayer,
     uiHint,
     gameDebugMode,
-    selectedTileStack
+    selectedTileStack,
+    previousStates,
+    isUndoable
   } = boardState;
   const selectedTile = selectedTileStack.length > 0 ? 
       selectedTileStack[selectedTileStack.length - 1] : 
@@ -205,7 +240,9 @@ const mapStateToProps = ({ boardState }) => {
     currentPlayer,
     uiHint,
     gameDebugMode,
-    selectedTile
+    selectedTile,
+    previousStates,
+    isUndoable
   };
 }
 
@@ -215,5 +252,6 @@ export default connect(mapStateToProps, {
   setDebugMode,
   selectTileInBag,
   swapPlayers,
-  playersInit
+  playersInit,
+  undoMove
 })(SidebarUi);
