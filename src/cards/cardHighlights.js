@@ -198,8 +198,10 @@ const highlightFromRule = (rule, players, iPlayerCurrent, iPlayerTile, rowTile, 
       } else {
         let highlight;
         if (tileInfo.iPlayer !== iPlayerTile) {
+          // selected tile is from other player of tile found on this space
           highlight = ruleType === RULETYPE_STRIKE ? HIGHLIGHT_CAPTURE_STRIKE : HIGHLIGHT_CAPTURE;
         } else if (ruleType === RULETYPE_COMMAND) {
+          // COMMAND highlights only work for same player as selected tile
           highlight = HIGHLIGHT_COMMAND;
         } else {
           return;
