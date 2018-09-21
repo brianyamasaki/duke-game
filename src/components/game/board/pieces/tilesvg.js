@@ -201,9 +201,9 @@ class Tile extends Component {
 
   renderTitle() {
     const title = nameFromTiletype(this.state.type);
-    const fontSize = title.length > 8 ? 65 : 100
+    const fontSize = title.length > 8 ? 120 : 180
     return (
-      <foreignObject x="0" y="500" width="500" height="200" fontSize={fontSize}>
+      <foreignObject x="0" y="500" width="500" height="200" fontSize={fontSize} alignmentBaseline="middle">
         <div className="title-container" xmlns="http://www.w3.org/1999/xhtml">
           {title}
         </div>
