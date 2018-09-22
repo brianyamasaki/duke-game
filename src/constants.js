@@ -12,6 +12,7 @@ export const HIGHLIGHT_STRIKE = 'HIGHLIGHT_STRIKE';
 export const HIGHLIGHT_COMMAND = 'HIGHLIGHT_COMMAND';
 export const HIGHLIGHT_CAPTURE = 'HIGHLIGHT_CAPTURE'; // highlights for capturing a tile that would move the tile
 export const HIGHLIGHT_CAPTURE_STRIKE = 'HIGHLIGHT_CAPTURE_STRIKE'; // highlights for capturing a tile that would not move the tile
+export const isCaptureHighlight = (highlight) => (highlight.type === HIGHLIGHT_CAPTURE || highlight.type === HIGHLIGHT_CAPTURE_STRIKE);
 
 export const SELECTED_TILE_IN_BAG = 'SELECTED_TILE_IN_BAG';
 export const SELECTED_TILE_ON_BOARD = 'SELECTED_TILE_ON_BOARD';

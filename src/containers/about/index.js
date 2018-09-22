@@ -21,8 +21,8 @@ const About = () => (
       <Col sm={12} md={6} lg={7}>
         <h2>The Project</h2>
         <p>
-          This game is a work in progress. Currently both players play on the same browser and must click the End of Turn button to let the other player play,
-          mostly because we haven't implemented Undo yet. We also don't save the game when you navigate away from the page. All this in an effort to get the game
+          This game is a work in progress. Currently both players play on the same browser and must click the End of Turn button. 
+          We also don't save the game when you navigate away from the page. All this in an effort to get the game
           playable as soon as possible. We will eventually create a server and a player matching service to allow players to play
           over the Internet.
         </p>

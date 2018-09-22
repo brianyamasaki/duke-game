@@ -1,3 +1,18 @@
+#boardBackground {
+  position: relative;
+  .notifications {
+    position: absolute;
+    top: 88%;
+    left: 10%;
+    right: 10%;
+    height: 4em;
+    text-align: center;
+    padding: 2%;
+    font-size: 1.2em;
+    border-radius: 1em;
+    background: rgba(255, 255, 255, 0.5);
+  }
+}
 .board {
   background: url('./Board.jpg') center top no-repeat;
   background-size: 100%;

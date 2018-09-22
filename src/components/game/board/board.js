@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import SpacesOnBoard from './pieces';
 import GameOverModal from './gameOver';
 import { isDukeCaptured } from '../../../modules/selectors/isGameOver';
+import { checkStates } from '../../../modules/selectors/isDukeInCheck';
+import { HINT_DUKE_IN_CHECK } from '../../../strings';
 
 import "./board.css";
 
@@ -48,6 +50,25 @@ class Board extends Component {
     }
   }
 
+  renderNotifications = () => {
+    const { uiHint, checkStates } = this.props;
+
+    if (checkStates.length > 0) {
+      return (
+        <div className="notifications">
+          {HINT_DUKE_IN_CHECK}
+        </div>
+      );  
+    }
+    if (uiHint) {
+      return (
+        <div className="notifications">
+          {uiHint}
+        </div>
+      );  
+    }
+  }
+
   render() {
     const style = {
       height: `${Math.floor(this.state.height)}px`,
@@ -63,7 +84,7 @@ class Board extends Component {
     }
     
     return (
-      <div>
+      <div id="boardBackground">
         <div 
           className={classes.join(' ')} 
           ref={this.refCallback} 
@@ -71,6 +92,7 @@ class Board extends Component {
           <SpacesOnBoard boardWidth={this.state.width}/>
         </div>
         {this.renderModal()}
+        {this.renderNotifications()}
       </div>
     );
   }
@@ -80,7 +102,9 @@ const mapStateToProps = state => {
   const { boardState } = state;
   return {
     currentPlayer: boardState.currentPlayer,
-    gameOverState: isDukeCaptured(state)
+    gameOverState: isDukeCaptured(state),
+    checkStates: checkStates(state),
+    uiHint: boardState.uiHint
   }
 }
 

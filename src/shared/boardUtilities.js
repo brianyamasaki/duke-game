@@ -21,7 +21,7 @@ export const indexToRowCol = index => {
 // find the index of the space the Duke is on
 export const dukeIndex = tilesOnBoard => {
   const dukeTileInfo = tilesOnBoard.find(tileInfo => tileInfo.type === TILE_DUKE);
-  return dukeTileInfo.iSpace;
+  return dukeTileInfo ? dukeTileInfo.iSpace : null;
 };
 
 // Duke can only be place on two spots for either player

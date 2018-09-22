@@ -248,26 +248,24 @@ class Tile extends Component {
   }
   renderHighlight() {
     const { highlight } = this.state;
-    if (highlight) {
-      switch (highlight.type) {
-        case HIGHLIGHT_CAPTURE_STRIKE:
-          return (
-            <polygon
-              fill="none"
-              stroke="#000000"
-              strokeWidth="40"
-              strokeMiterlimit="10"
-              strokeOpacity="0.6"
-              points={strikeIconPoints({ x: 50, y: 50 }, 700)}
-            />
-          );
-        case HIGHLIGHT_COMMAND:
-          return <CommandIcon center={{ x: 350, y: 350 }} maxWidth={700} />;
-        case HIGHLIGHT_CAPTURE:
-          return <CaptureIcon center={{ x: 350, y: 350 }} maxWidth={700} />;
-        default:
-          break;
-      }
+    switch (highlight) {
+      case HIGHLIGHT_CAPTURE_STRIKE:
+        return (
+          <polygon
+            fill="none"
+            stroke="#000000"
+            strokeWidth="40"
+            strokeMiterlimit="10"
+            strokeOpacity="0.6"
+            points={strikeIconPoints({ x: 50, y: 50 }, 700)}
+          />
+        );
+      case HIGHLIGHT_COMMAND:
+        return <CommandIcon center={{ x: 350, y: 350 }} maxWidth={700} />;
+      case HIGHLIGHT_CAPTURE:
+        return <CaptureIcon center={{ x: 350, y: 350 }} maxWidth={700} />;
+      default:
+        break;
     }
     return;
   }

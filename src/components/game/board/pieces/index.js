@@ -16,6 +16,7 @@ import {
   otherPlayerPlaceDuke,
 } from '../../../../modules/boardState';
 import { tiledSpaces } from '../../../../modules/selectors/boardSpaces';
+import { checkStates } from '../../../../modules/selectors/isDukeInCheck';
 import { CaptureIcon, StrikeIcon } from '../../../../icons';
 
 import './index.css';
@@ -63,17 +64,15 @@ class SpacesOnBoard extends Component {
     spaceClicked(i, boardState.gameState, tileType, isOdd, tilePlayer, highlight ? highlight.type : null);
   }
 
-  renderTile = (tile, highlight) => {
-    if (!tile.type && highlight) {
-      return this.renderHighlightIcon(highlight)
+  renderTile = (tile, highlightType) => {
+    if (!tile.type && highlightType) {
+      return this.renderHighlightIcon(highlightType)
     }
-    return <TileSvg type={tile.type} player={tile.iPlayer} moves={tile.moves} highlight={highlight} />
+    return <TileSvg type={tile.type} player={tile.iPlayer} moves={tile.moves} highlight={highlightType} />
   }
 
-  renderHighlightIcon = (highlight) => {
-    if (!highlight)
-      return;
-    switch (highlight.type) {
+  renderHighlightIcon = (highlightType) => {
+    switch (highlightType) {
       case HIGHLIGHT_STRIKE:
         return <StrikeIcon />;
       case HIGHLIGHT_CAPTURE:
@@ -84,21 +83,36 @@ class SpacesOnBoard extends Component {
   }
 
   renderSpace = (space, i) => {
-    const { boardWidth, boardState, cancelSelection, selectedTileStack, gameState } = this.props;
+    const { boardWidth, boardState, cancelSelection, selectedTileStack, gameState, checkStates } = this.props;
     const height = `${Math.floor(boardWidth / BOARD_SPACE_DIVISOR)}px`;
     const style = {
       height,
       width: height
     };
     const highlight = boardState.highlighted.find(item => item.iSpace === i);
+    let highlightType = highlight ? highlight.type : null;
     const isSelected = selectedTileStack.findIndex(selectedTile => selectedTile.iSpace === i) !== -1;
     const isTileSelectable = space.type && gameState === GAME_SELECT_OR_DRAW;
+    let isInCheck = false;
     const classes = ['space'];
-    if (highlight) {
+    if (checkStates.length > 0) {
+      const checkState = checkStates.find(checkState => (
+        checkState.iSpaceDuke === i || checkState.iSpaceCapturingTile === i
+      ));
+      if (checkState) {
+        if (checkState.iSpaceDuke === i) {
+          isInCheck = true;
+          classes.push('capture');
+          classes.push('highlight');
+        } else {
+          classes.push('selected');
+        }
+      }
+    } else if (highlightType) {
       classes.push('highlight');
-      if (highlight.type === HIGHLIGHT_CAPTURE) {
+      if (highlightType === HIGHLIGHT_CAPTURE) {
         classes.push('capture');
-      } else if (highlight.type === HIGHLIGHT_CAPTURE_STRIKE) {
+      } else if (highlightType === HIGHLIGHT_CAPTURE_STRIKE) {
         classes.push('capture');
         classes.push('strike');
       }
@@ -119,7 +133,7 @@ class SpacesOnBoard extends Component {
           (highlight || isTileSelectable) && this.onClick(e, i, space.type, space.moves, highlight, space.iPlayer)
         }}
         style={style}>
-        { this.renderTile(space, highlight)}
+        { this.renderTile(space, isInCheck ? HIGHLIGHT_CAPTURE : highlightType)}
       </span> 
     );
   }
@@ -141,6 +155,7 @@ const mapStateToProps = state => {
   const { boardState } = state;
   return {
     tiledSpaces: tiledSpaces(state),
+    checkStates: checkStates(state),
     boardState,
     gameDebugMode: boardState.gameDebugMode,
     gameState: boardState.gameState,

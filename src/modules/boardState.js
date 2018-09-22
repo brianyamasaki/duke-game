@@ -46,6 +46,7 @@ export const GAME_SELECT_TILE_IN_BAG = 'GAME_SELECT_TILE_IN_BAG';
 export const GAME_SWAP_PLAYERS = 'GAME_SWAP_PLAYERS';
 export const GAME_DEBUG_MODE = 'GAME_DEBUG_MODE';
 export const GAME_UNDO_MOVE = 'GAME_UNDO_MOVE';
+export const GAME_SHOW_CHECK = 'GAME_SHOW_CHECK';
 
 export const PLAYERS_INIT = 'PLAYERS_INIT';
 
@@ -202,7 +203,8 @@ export default (state = initialState, action) => {
         ...state,
         currentPlayer: state.currentPlayer ? 0 : 1,
         highlighted: dukePlacement(1),
-        gameState: GAME_CHOOSE_DUKE_POSITION
+        gameState: GAME_CHOOSE_DUKE_POSITION,
+        uiHint: HINT_PLACE_DUKE
       };
     case GAME_SELECT_OR_DRAW:
       return {
